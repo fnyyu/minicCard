@@ -24,16 +24,13 @@ public class SplashActivity extends Activity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mStartHomeRunnable.run();
+        intentHome();
     }
 
-    private final Runnable mStartHomeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Intent intent = new Intent(SplashActivity.this, StartUpActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    };
+    private void intentHome() {
+        Intent intent = new Intent(SplashActivity.this, StartUpActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 }
