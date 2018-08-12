@@ -81,11 +81,6 @@ public class NetRequest {
                 }
             }
         });
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -96,31 +91,35 @@ public class NetRequest {
      */
     public void collectGetRequest(String businessId) {
 
-        BusinessBean jsonBean;
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_COLLECT_CARD + businessId)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_COLLECT_CARD, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_COLLECT_CARD, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                BusinessBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_COLLECT_CARD, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_COLLECT_CARD, jsonBean);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -174,8 +173,6 @@ public class NetRequest {
      */
     public void registerRequest(UserBean bean) {
 
-        LoginBean jsonBean;
-
         RequestBody requestBody = new FormBody.Builder()
                 .add(bean.nameToString(), bean.getAname())
                 .add(bean.pasToString(), bean.getApwd())
@@ -186,24 +183,30 @@ public class NetRequest {
                 .url(LINK_REGISTER)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<LoginBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_REGISTER, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                LoginBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<LoginBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_REGISTER, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -213,8 +216,6 @@ public class NetRequest {
      * @return
      */
     public void addCardRequest(CardBean bean) {
-
-        CardAddBean jsonBean;
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("user_id", bean.getUser_id())
@@ -234,24 +235,30 @@ public class NetRequest {
                 .url(LINK_ADD_CARD)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<CardAddBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_ADD_CARD, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_ADD_CARD, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                CardAddBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<CardAddBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_ADD_CARD, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_ADD_CARD, jsonBean);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -260,8 +267,6 @@ public class NetRequest {
      * @param bean
      */
     public void eidtCardRequest(CardBean bean) {
-
-        ResultBean jsonBean;
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("user_id", bean.getUser_id())
@@ -281,24 +286,30 @@ public class NetRequest {
                 .url(LINK_EDIT)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_EDIT, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_EDIT, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResultBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_EDIT, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_EDIT, jsonBean);
+                }
             }
-        }
+        });
     }
 
 
@@ -310,31 +321,35 @@ public class NetRequest {
      */
     public void addCollectRequest(CardBean cardBean) {
 
-        ResultBean jsonBean;
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_ADD_COLLECT + "collect_user_id=" + cardBean.getUser_id() + "&collect_card_id=" + cardBean.getCard_id())
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_ADD_COLLECT, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_ADD_COLLECT, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResultBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_ADD_COLLECT, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_ADD_COLLECT, jsonBean);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -345,31 +360,35 @@ public class NetRequest {
      */
     public void delCollectRequest(CardBean cardBean) {
 
-        ResultBean jsonBean;
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_DEL_COLLECT + "collect_card_id=" + cardBean.getCard_id() + "&collect_user_id=" + cardBean.getUser_id())
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_DEL_COLLECT, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_DEL_COLLECT, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResultBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_DEL_COLLECT, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_DEL_COLLECT, jsonBean);
+                }
             }
-        }
+        });
     }
 
 
@@ -381,31 +400,35 @@ public class NetRequest {
      */
     public void delCardRequest(String cardId) {
 
-        ResultBean jsonBean;
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_DELETE + cardId)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_DELETE, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_DELETE, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResultBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_DELETE, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_DELETE, jsonBean);
+                }
             }
-        }
+        });
     }
 
 
@@ -417,31 +440,35 @@ public class NetRequest {
      */
     public void searchRequest(String input) {
 
-        BusinessBean jsonBean;
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_SEARCH + input)
                 .get()
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_SEARCH, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_SEARCH, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                BusinessBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_SEARCH, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_SEARCH, jsonBean);
+                }
             }
-        }
+        });
     }
 
 

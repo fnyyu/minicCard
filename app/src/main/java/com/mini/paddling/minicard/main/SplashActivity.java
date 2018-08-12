@@ -17,11 +17,8 @@ public class SplashActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        //感觉似乎没必要开线程（？）
         mStartHomeRunnable.run();
     }
 
