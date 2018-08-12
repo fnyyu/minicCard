@@ -115,7 +115,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public int getItemCount() {
-        return businessBean.getData() == null ? 0 : businessBean.getData().size();
+        return businessBean == null || businessBean.getData() == null ? 0 : businessBean.getData().size();
     }
 
     public class CardViewHolder extends RecyclerView.ViewHolder{

@@ -5,7 +5,11 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.View;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class CommonUtils {
 
@@ -75,5 +79,7 @@ public class CommonUtils {
         }
 
     }
+
+
 
 }
