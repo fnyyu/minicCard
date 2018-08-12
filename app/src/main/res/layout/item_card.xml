@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" 
+    android:background="@color/grey"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+    
+    <RelativeLayout
+        android:padding="20dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <com.facebook.drawee.view.SimpleDraweeView
+            fresco:roundedCornerRadius="3dp"
+            android:id="@+id/iv_card"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <RelativeLayout
+            android:background="@color/transparent_black"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <TextView
+            android:text="@string/app_name"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textSize="17dp"
+            android:layout_above="@id/tv_operating"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/app_name"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_above="@id/tv_address"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_operating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/app_name"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_alignBottom="@id/iv_card"
+            android:textColor="@color/white"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        
+    </RelativeLayout>
+
+</RelativeLayout>

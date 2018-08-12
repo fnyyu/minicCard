@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:background="@color/theme_color"
+        android:layout_marginRight="10dp"
+        android:scaleType="fitCenter"
+        android:id="@+id/iv_picture"
+        android:layout_width="75dp"
+        android:layout_height="50dp" />
+
+</RelativeLayout>

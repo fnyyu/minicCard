@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.mini.paddling.minicard.search.SearchTopView
+        android:id="@+id/stv_search"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/stv_search"
+        android:id="@+id/rlv_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.mini.paddling.minicard.view.CommonEmptyView
+        android:id="@+id/cev_empty"
+        android:visibility="invisible"
+        android:layout_below="@id/stv_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

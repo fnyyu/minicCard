@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">MiniCard</string>
+    <string name="title_home">名片夹</string>
+    <string name="title_card">我的名片</string>
+    <string name="title_mine">个人主页</string>
+
+
+    <string name="qq_login_text">手机QQ快速登录</string>
+
+    <string name="login_text">登录\nmini名片</string>
+    <string name="register_text">还没有账号？点击注册</string>
+
+    <string name="name">用户名</string>
+    <string name="password">用户密码</string>
+    <string name="confirm">确认密码</string>
+
+    <string name="store">店铺名称</string>
+    <string name="business">主营业务</string>
+    <string name="phone">联系方式</string>
+    <string name="address">店铺地址</string>
+    <string name="sign">个性签名</string>
+
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="commit">提交</string>
+    <string name="edit">编辑</string>
+    <string name="share">分享</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+
+    <string name="add_picture">添加图片</string>
+    <string name="gallery">从图库中选取</string>
+    <string name="camera">拍摄照片</string>
+
+    <string name="search_hint">搜索更多</string>
+
+    <string name="add_card">创建名片让更多人认识你吧</string>
+    <string name="add_collect">快来收藏名片吧</string>
+    <string name="search_empty">暂时找不到噢</string>
+
+    <string name="special_text">%1$s&#160;/&#160;%2$s</string>
+
+    <string name="protocol_text">创建账号即代表您同意用户服务协议</string>
+
+
+</resources>

@@ -1,0 +1,417 @@
+package com.mini.paddling.minicard.protocol.net;
+
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mini.paddling.minicard.protocol.bean.BusinessBean;
+import com.mini.paddling.minicard.protocol.bean.CardAddBean;
+import com.mini.paddling.minicard.protocol.bean.CardBean;
+import com.mini.paddling.minicard.protocol.bean.LoginBean;
+import com.mini.paddling.minicard.protocol.bean.ResultBean;
+import com.mini.paddling.minicard.protocol.bean.UserBean;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_ADD_CARD;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_ADD_COLLECT;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_COLLECT_CARD;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_DELETE;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_DEL_COLLECT;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_EDIT;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_LOGIN;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_REGISTER;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_SEARCH;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_USER_CARD;
+
+public class NetRequest {
+
+    private static final String TAG = "NetRequest";
+
+    private OnRequestListener onRequestListener;
+
+    public static final String REQUEST_RESULT_OK = "200";
+    public static final String REQUEST_RESULT_ERROR = "300";
+
+    public NetRequest(OnRequestListener onRequestListener){
+        this.onRequestListener = onRequestListener;
+    }
+
+    /**
+     * 用户名片列表信息接口请求
+     * @param businessId
+     * @return
+     */
+    public void businessGetRequest(String businessId) {
+
+        BusinessBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_USER_CARD + businessId)
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_USER_CARD, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_USER_CARD, null);
+            }
+        }
+    }
+
+    /**
+     * 用户收藏列表信息接口请求
+     * @param businessId
+     * @return
+     */
+    public void collectGetRequest(String businessId) {
+
+        BusinessBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_COLLECT_CARD + businessId)
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_COLLECT_CARD, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_COLLECT_CARD, null);
+            }
+        }
+    }
+
+    /**
+     * 登陆接口调用请求
+     * @param bean
+     * @return
+     */
+    public void loginRequest(UserBean bean) {
+
+        LoginBean jsonBean;
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add(bean.nameToString(), bean.getAname())
+                .add(bean.pasToString(), bean.getApwd())
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_LOGIN)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<LoginBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_LOGIN, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_LOGIN, null);
+            }
+        }
+    }
+
+    /**
+     * 注册接口调用请求
+     * @param bean
+     * @return
+     */
+    public void registerRequest(UserBean bean) {
+
+        LoginBean jsonBean;
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add(bean.nameToString(), bean.getAname())
+                .add(bean.pasToString(), bean.getApwd())
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_REGISTER)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<LoginBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_REGISTER, null);
+            }
+        }
+    }
+
+    /**
+     * 添加名片信息接口调用请求
+     * @param bean
+     * @return
+     */
+    public void addCardRequest(CardBean bean) {
+
+        CardAddBean jsonBean;
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("user_id", bean.getUser_id())
+                .add("card_business_name", bean.getCard_business_name())
+                .add("card_business_trade", bean.getCard_business_trade())
+                .add("card_business_service", bean.getCard_business_service())
+                .add("card_user_name", bean.getCard_user_name())
+                .add("card_user_tel", bean.getCard_user_tel())
+                .add("card_user_address", bean.getCard_user_address())
+                .add("card_user_slogan", bean.getCard_user_slogan())
+                .add("card_user_picture", bean.getCard_user_picture())
+                .add("card_click_time", bean.getCard_click_time())
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_ADD_CARD)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<CardAddBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_ADD_CARD, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_ADD_CARD, null);
+            }
+        }
+    }
+
+    /**
+     * 编辑名片信息接口调用
+     * @param bean
+     */
+    public void eidtCardRequest(CardBean bean) {
+
+        ResultBean jsonBean;
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("user_id", bean.getUser_id())
+                .add("card_business_name", bean.getCard_business_name())
+                .add("card_business_trade", bean.getCard_business_trade())
+                .add("card_business_service", bean.getCard_business_service())
+                .add("card_user_name", bean.getCard_user_name())
+                .add("card_user_tel", bean.getCard_user_tel())
+                .add("card_user_address", bean.getCard_user_address())
+                .add("card_user_slogan", bean.getCard_user_slogan())
+                .add("card_user_picture", bean.getCard_user_picture())
+                .add("card_click_time", bean.getCard_click_time())
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_EDIT)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_EDIT, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_EDIT, null);
+            }
+        }
+    }
+
+
+    /**
+     * 添加收藏信息接口调用请求
+     * @param cardBean
+     * @return
+     */
+    public void addCollectRequest(CardBean cardBean) {
+
+        ResultBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_ADD_COLLECT + "collect_user_id=" + cardBean.getUser_id() + "&collect_card_id=" + cardBean.getCard_id())
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_ADD_COLLECT, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_ADD_COLLECT, null);
+            }
+        }
+    }
+
+    /**
+     * 删除收藏信息接口调用请求
+     * @param cardBean
+     * @return
+     */
+    public void delCollectRequest(CardBean cardBean) {
+
+        ResultBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_DEL_COLLECT + "collect_card_id=" + cardBean.getCard_id() + "&collect_user_id=" + cardBean.getUser_id() )
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_DEL_COLLECT, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_DEL_COLLECT, null);
+            }
+        }
+    }
+
+
+    /**
+     * 删除名片信息接口调用请求
+     * @param cardId
+     * @return
+     */
+    public void delCardRequest(String cardId) {
+
+        ResultBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_DELETE + cardId)
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_DELETE, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_DELETE, null);
+            }
+        }
+    }
+
+
+    /**
+     * 模糊搜索名片信息接口请求
+     * @param input
+     * @return
+     */
+    public void searchRequest(String input) {
+
+        BusinessBean jsonBean;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(LINK_SEARCH + input)
+                .get()
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
+            jsonBean = gson.fromJson(response.body().string(), type);
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_SEARCH, jsonBean);
+            }
+
+        }catch (Exception e){
+            Log.i(TAG, e.getMessage());
+
+            if (onRequestListener != null){
+                onRequestListener.onLoadFinish(LINK_SEARCH, null);
+            }
+        }
+    }
+
+
+    public interface OnRequestListener{
+        void onLoadFinish(String operationType, ResultBean resultBean);
+    }
+
+}

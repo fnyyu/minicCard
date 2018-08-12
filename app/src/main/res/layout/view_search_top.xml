@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="15dp">
+
+    <com.mini.paddling.minicard.search.SearchEditText
+        android:focusable="true"
+        android:singleLine="true"
+        android:imeOptions="actionSearch"
+        android:id="@+id/search_editText"
+        android:paddingLeft="16dp"
+        android:background="@drawable/home_search_shape"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:textColor="@color/theme_color"
+        android:layout_height="30dp"
+        android:drawableLeft="@drawable/search_ic_search"
+        android:drawablePadding="10dp"
+        android:textColorHint="@color/grey"
+        android:drawableRight="@drawable/search_ic_dele"
+        android:paddingRight="6dp"
+        android:textSize="12dp" />
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/search_cancelView"
+        android:textSize="14dp"
+        android:paddingLeft="12dp"
+        android:textColor="@color/theme_color"
+        android:text="@string/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>
