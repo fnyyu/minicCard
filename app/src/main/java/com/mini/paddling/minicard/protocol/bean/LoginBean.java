@@ -1,8 +1,9 @@
 package com.mini.paddling.minicard.protocol.bean;
 
 public class LoginBean extends ResultBean {
+
     /**
-     * data : {"uid":"2835"}
+     * data : {"user_id":2841}
      */
 
     private DataBean data;
@@ -17,17 +18,17 @@ public class LoginBean extends ResultBean {
 
     public static class DataBean {
         /**
-         * uid : 2835
+         * user_id : 2841
          */
 
-        private String uid;
+        private int user_id;
 
-        public String getUid() {
-            return uid;
+        public int getUser_id() {
+            return user_id;
         }
 
-        public void setUid(String uid) {
-            this.uid = uid;
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
         }
     }
 }

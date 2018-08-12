@@ -1,5 +1,8 @@
 package com.mini.paddling.minicard.protocol.net;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mini.paddling.minicard.protocol.bean.BusinessBean;
@@ -174,8 +177,6 @@ public class NetRequest {
      */
     public void registerRequest(UserBean bean) {
 
-        LoginBean jsonBean;
-
         RequestBody requestBody = new FormBody.Builder()
                 .add(bean.nameToString(), bean.getAname())
                 .add(bean.pasToString(), bean.getApwd())
@@ -186,24 +187,29 @@ public class NetRequest {
                 .url(LINK_REGISTER)
                 .post(requestBody)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<LoginBean>() {
-            }.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_REGISTER, null);
+                }
             }
 
-        } catch (Exception e) {
-            LogUtils.i(TAG, e);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<LoginBean>() {}.getType();
+                LoginBean jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null) {
-                onRequestListener.onLoadFinish(LINK_REGISTER, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
+                }
             }
-        }
+        });
+
     }
 
     /**

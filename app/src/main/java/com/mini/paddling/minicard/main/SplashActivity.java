@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
+import com.mini.paddling.minicard.user.StartUpActivity;
+
 public class SplashActivity extends Activity {
 
     @Override
@@ -18,7 +20,7 @@ public class SplashActivity extends Activity {
     protected void onResume() {
         super.onResume();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -28,7 +30,7 @@ public class SplashActivity extends Activity {
     private final Runnable mStartHomeRunnable = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            Intent intent = new Intent(SplashActivity.this, StartUpActivity.class);
             startActivity(intent);
             finish();
         }

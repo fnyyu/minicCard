@@ -6,7 +6,7 @@ public class LinksBean {
 
     public static final String LINK_LOGIN = LINK + "login/adminlogin";
 
-    public static final String LINK_REGISTER = LINK + "Register/";
+    public static final String LINK_REGISTER = LINK + "Register/onregister";
 
     public static final String LINK_USER_CARD = LINK + "card/getusercard?user_id=";
 

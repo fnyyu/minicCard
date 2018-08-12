@@ -3,6 +3,7 @@ package com.mini.paddling.minicard.user;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -168,36 +169,42 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
         }
     }
 
-    private void startHome(String userId){
+    private void startHome(int userId){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("userId", userId);
+        intent.putExtra("userId", String.valueOf(userId));
         startActivity(intent);
     }
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
-        if (resultBean != null && resultBean instanceof LoginBean){
+    public void onLoadFinish(final String operationType, final ResultBean resultBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (resultBean != null && resultBean instanceof LoginBean){
+                    LoginBean loginBean = (LoginBean) resultBean;
+                    Toast.makeText(LoginActivity.this, loginBean.getRet_message(), Toast.LENGTH_SHORT).show();
 
-            LoginBean loginBean = (LoginBean) resultBean;
-            Toast.makeText(LoginActivity.this, loginBean.getRet_message(), Toast.LENGTH_SHORT).show();
+                    if (loginBean.getRet_code().equals(REQUEST_RESULT_OK)){
 
-            if (loginBean.getRet_code().equals(REQUEST_RESULT_OK)){
+                        if (operationType.equals(LINK_LOGIN) && loginBean.getData()!= null){
+                            startHome(loginBean.getData().getUser_id());
+                        }else {
+                            netRequest.loginRequest(userBean);
+                        }
 
-                if (operationType.equals(LINK_LOGIN) && loginBean.getData()!= null){
-                    startHome(loginBean.getData().getUid());
+                    }else {
+                        etName.setText("");
+                        etConform.setText("");
+                        etPassword.setText("");
+                    }
+
+
                 }else {
-                    netRequest.loginRequest(userBean);
+                    Toast.makeText(LoginActivity.this, "系统错误，请重试", Toast.LENGTH_SHORT).show();
                 }
-
-            }else {
-                etName.setText("");
-                etConform.setText("");
-                etPassword.setText("");
             }
 
+        });
 
-        }else {
-            Toast.makeText(LoginActivity.this, "系统错误，请重试", Toast.LENGTH_SHORT).show();
-        }
     }
 }
