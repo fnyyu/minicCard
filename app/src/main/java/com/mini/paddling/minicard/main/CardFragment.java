@@ -21,7 +21,12 @@ import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
 import com.mini.paddling.minicard.search.HomeSearchView;
 import com.mini.paddling.minicard.search.SearchActivity;
+import com.mini.paddling.minicard.util.LogUtils;
 import com.mini.paddling.minicard.view.CommonEmptyView;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +52,8 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
 
     private boolean isCardPage;
     private String userId;
+
+    public static final String TAG = "CardFragment";
 
     @Nullable
     @Override
@@ -101,8 +108,14 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
                 showPopMenu(view, position);
             }
         });
-
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            LogUtils.i(TAG, e);
+        }
     }
+
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     @Override
     public void onLoadFinish(String operationType, ResultBean resultBean) {
@@ -118,6 +131,7 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
         }else {
             cevEmpty.setVisibility(View.VISIBLE);
         }
+        countDownLatch.countDown();
     }
 
     public void showPopMenu(View view,final int pos){

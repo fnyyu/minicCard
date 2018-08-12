@@ -1,7 +1,5 @@
 package com.mini.paddling.minicard.protocol.net;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mini.paddling.minicard.protocol.bean.BusinessBean;
@@ -10,7 +8,12 @@ import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.LoginBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.bean.UserBean;
+import com.mini.paddling.minicard.util.LogUtils;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,45 +40,57 @@ public class NetRequest {
     public static final String REQUEST_RESULT_OK = "200";
     public static final String REQUEST_RESULT_ERROR = "300";
 
-    public NetRequest(OnRequestListener onRequestListener){
+    public NetRequest(OnRequestListener onRequestListener) {
         this.onRequestListener = onRequestListener;
     }
 
     /**
      * 用户名片列表信息接口请求
+     *
      * @param businessId
      * @return
      */
     public void businessGetRequest(String businessId) {
-
-        BusinessBean jsonBean;
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(LINK_USER_CARD + businessId)
                 .get()
                 .build();
-        try{
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
-                onRequestListener.onLoadFinish(LINK_USER_CARD, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_USER_CARD, null);
+                }
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                BusinessBean jsonBean;
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
+                }.getType();
+                jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
-                onRequestListener.onLoadFinish(LINK_USER_CARD, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_USER_CARD, jsonBean);
+                }
             }
+        });
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * 用户收藏列表信息接口请求
+     *
      * @param businessId
      * @return
      */
@@ -88,20 +103,21 @@ public class NetRequest {
                 .url(LINK_COLLECT_CARD + businessId)
                 .get()
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_COLLECT_CARD, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_COLLECT_CARD, null);
             }
         }
@@ -109,12 +125,11 @@ public class NetRequest {
 
     /**
      * 登陆接口调用请求
+     *
      * @param bean
      * @return
      */
     public void loginRequest(UserBean bean) {
-
-        LoginBean jsonBean;
 
         RequestBody requestBody = new FormBody.Builder()
                 .add(bean.nameToString(), bean.getAname())
@@ -126,27 +141,34 @@ public class NetRequest {
                 .url(LINK_LOGIN)
                 .post(requestBody)
                 .build();
-        try{
-            Response response = client.newCall(request).execute();
-            Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<LoginBean>() {}.getType();
-            jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
-                onRequestListener.onLoadFinish(LINK_LOGIN, jsonBean);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i(TAG, e);
+
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_LOGIN, null);
+                }
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Gson gson = new Gson();
+                java.lang.reflect.Type type = new TypeToken<LoginBean>() {
+                }.getType();
+                LoginBean jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
-                onRequestListener.onLoadFinish(LINK_LOGIN, null);
+                if (onRequestListener != null) {
+                    onRequestListener.onLoadFinish(LINK_LOGIN, jsonBean);
+                }
             }
-        }
+        });
     }
 
     /**
      * 注册接口调用请求
+     *
      * @param bean
      * @return
      */
@@ -164,20 +186,21 @@ public class NetRequest {
                 .url(LINK_REGISTER)
                 .post(requestBody)
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<LoginBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<LoginBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_REGISTER, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_REGISTER, null);
             }
         }
@@ -185,6 +208,7 @@ public class NetRequest {
 
     /**
      * 添加名片信息接口调用请求
+     *
      * @param bean
      * @return
      */
@@ -210,20 +234,21 @@ public class NetRequest {
                 .url(LINK_ADD_CARD)
                 .post(requestBody)
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<CardAddBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<CardAddBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_ADD_CARD, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_ADD_CARD, null);
             }
         }
@@ -231,6 +256,7 @@ public class NetRequest {
 
     /**
      * 编辑名片信息接口调用
+     *
      * @param bean
      */
     public void eidtCardRequest(CardBean bean) {
@@ -255,20 +281,21 @@ public class NetRequest {
                 .url(LINK_EDIT)
                 .post(requestBody)
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_EDIT, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_EDIT, null);
             }
         }
@@ -277,6 +304,7 @@ public class NetRequest {
 
     /**
      * 添加收藏信息接口调用请求
+     *
      * @param cardBean
      * @return
      */
@@ -289,20 +317,21 @@ public class NetRequest {
                 .url(LINK_ADD_COLLECT + "collect_user_id=" + cardBean.getUser_id() + "&collect_card_id=" + cardBean.getCard_id())
                 .get()
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_ADD_COLLECT, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_ADD_COLLECT, null);
             }
         }
@@ -310,6 +339,7 @@ public class NetRequest {
 
     /**
      * 删除收藏信息接口调用请求
+     *
      * @param cardBean
      * @return
      */
@@ -319,23 +349,24 @@ public class NetRequest {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(LINK_DEL_COLLECT + "collect_card_id=" + cardBean.getCard_id() + "&collect_user_id=" + cardBean.getUser_id() )
+                .url(LINK_DEL_COLLECT + "collect_card_id=" + cardBean.getCard_id() + "&collect_user_id=" + cardBean.getUser_id())
                 .get()
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_DEL_COLLECT, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_DEL_COLLECT, null);
             }
         }
@@ -344,6 +375,7 @@ public class NetRequest {
 
     /**
      * 删除名片信息接口调用请求
+     *
      * @param cardId
      * @return
      */
@@ -356,20 +388,21 @@ public class NetRequest {
                 .url(LINK_DELETE + cardId)
                 .get()
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<ResultBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<ResultBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_DELETE, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_DELETE, null);
             }
         }
@@ -378,6 +411,7 @@ public class NetRequest {
 
     /**
      * 模糊搜索名片信息接口请求
+     *
      * @param input
      * @return
      */
@@ -390,27 +424,28 @@ public class NetRequest {
                 .url(LINK_SEARCH + input)
                 .get()
                 .build();
-        try{
+        try {
             Response response = client.newCall(request).execute();
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<BusinessBean>() {
+            }.getType();
             jsonBean = gson.fromJson(response.body().string(), type);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_SEARCH, jsonBean);
             }
 
-        }catch (Exception e){
-            Log.i(TAG, e.getMessage());
+        } catch (Exception e) {
+            LogUtils.i(TAG, e);
 
-            if (onRequestListener != null){
+            if (onRequestListener != null) {
                 onRequestListener.onLoadFinish(LINK_SEARCH, null);
             }
         }
     }
 
 
-    public interface OnRequestListener{
+    public interface OnRequestListener {
         void onLoadFinish(String operationType, ResultBean resultBean);
     }
 

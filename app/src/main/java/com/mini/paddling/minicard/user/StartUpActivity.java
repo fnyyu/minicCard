@@ -52,7 +52,7 @@ public class StartUpActivity extends Activity {
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent registerIntent = new Intent(StartUpActivity.this, RegisterActivity.class);
+                Intent registerIntent = new Intent(StartUpActivity.this, LoginActivity.class);
                 registerIntent.putExtra("title", getResources().getString(R.string.register));
                 startActivity(registerIntent);
                 finish();
