@@ -162,30 +162,35 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
 
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
-        if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
+    public void onLoadFinish(final String operationType, final ResultBean resultBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
 
-            CollectEvent collectEvent = new CollectEvent();
+                    CollectEvent collectEvent = new CollectEvent();
 
-            if (operationType.equals(LINK_ADD_COLLECT)){
-                ivCollect.setImageResource(RES[1]);
+                    if (operationType.equals(LINK_ADD_COLLECT)){
+                        ivCollect.setImageResource(RES[1]);
 
-                collectEvent.setCardId(cardBean.getCard_id());
-                collectEvent.setUserId(cardBean.getUser_id());
-                collectEvent.setType(1);
+                        collectEvent.setCardId(cardBean.getCard_id());
+                        collectEvent.setUserId(cardBean.getUser_id());
+                        collectEvent.setType(1);
 
-            }else {
-                ivCollect.setImageResource(RES[0]);
-                collectEvent.setCardId(cardBean.getCard_id());
-                collectEvent.setUserId(cardBean.getUser_id());
-                collectEvent.setType(0);
+                    }else {
+                        ivCollect.setImageResource(RES[0]);
+                        collectEvent.setCardId(cardBean.getCard_id());
+                        collectEvent.setUserId(cardBean.getUser_id());
+                        collectEvent.setType(0);
+                    }
+
+                    EventBus.getDefault().post(collectEvent);
+
+                }else {
+                    Toast.makeText(CardActivity.this, "收藏相关操作失败请重试", Toast.LENGTH_SHORT).show();
+                }
             }
-
-            EventBus.getDefault().post(collectEvent);
-
-        }else {
-            Toast.makeText(CardActivity.this, "收藏相关操作失败请重试", Toast.LENGTH_SHORT).show();
-        }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

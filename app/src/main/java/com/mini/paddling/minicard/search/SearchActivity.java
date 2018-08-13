@@ -141,14 +141,19 @@ public class SearchActivity extends Activity  implements SearchEditText.SearchCl
     }
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
-        if (resultBean != null && resultBean instanceof BusinessBean){
-            cardAdapter.setBusinessBean((BusinessBean) resultBean);
-            cardAdapter.notifyDataSetChanged();
-            cevEmpty.setVisibility(View.GONE);
-        }else {
-            cevEmpty.setVisibility(View.VISIBLE);
-        }
+    public void onLoadFinish(final String operationType, final ResultBean resultBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (resultBean != null && resultBean instanceof BusinessBean){
+                    cardAdapter.setBusinessBean((BusinessBean) resultBean);
+                    cardAdapter.notifyDataSetChanged();
+                    cevEmpty.setVisibility(View.GONE);
+                }else {
+                    cevEmpty.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private class SearchTextWatcher implements TextWatcher {
