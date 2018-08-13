@@ -36,4 +36,6 @@ dependencies {
     implementation files('libs/gson-2.8.5.jar')
     implementation files('libs/eventbus-3.1.1.jar')
     implementation files('libs/open_sdk_r6008_lite.jar')
+    implementation 'cn.jzvd:jiaozivideoplayer:6.2.9'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }

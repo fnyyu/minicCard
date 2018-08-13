@@ -7,6 +7,7 @@
     android:padding="15dp">
 
     <com.mini.paddling.minicard.search.SearchEditText
+        android:hint="@string/search_text"
         android:focusable="true"
         android:singleLine="true"
         android:imeOptions="actionSearch"
@@ -19,8 +20,7 @@
         android:layout_height="30dp"
         android:drawableLeft="@drawable/search_ic_search"
         android:drawablePadding="10dp"
-        android:textColorHint="@color/grey"
-        android:drawableRight="@drawable/search_ic_dele"
+        android:drawableRight="@drawable/clear"
         android:paddingRight="6dp"
         android:textSize="12dp" />
 

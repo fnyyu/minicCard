@@ -19,6 +19,8 @@
 
     <color name="transparent">#00ffffff</color>
 
+    <color name="theme_grey">#f6f6f6</color>
+
     <color name="grey">#f1f1f1</color>
     <color name="grey0">#f1f1f1</color>
 </resources>

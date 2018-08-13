@@ -32,10 +32,16 @@
         <com.facebook.drawee.view.SimpleDraweeView
             fresco:placeholderImage="@drawable/login_bg"
             android:scaleType="centerCrop"
-            android:background="@color/white"
+            android:background="@color/black"
             android:id="@+id/iv_picture"
             android:layout_width="match_parent"
             android:layout_height="170dp" />
+
+        <cn.jzvd.JZVideoPlayerStandard
+            android:visibility="invisible"
+            android:id="@+id/vp_player"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"/>
 
         <TextView
             android:layout_marginTop="10dp"

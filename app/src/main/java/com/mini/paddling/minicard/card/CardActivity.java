@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.event.CardEvent;
@@ -29,6 +31,7 @@ import com.mini.paddling.minicard.util.CommonUtils;
 import com.mini.paddling.minicard.util.FileUtils;
 import com.mini.paddling.minicard.util.LogUtils;
 import com.mini.paddling.minicard.view.TitleBarView;
+import com.squareup.picasso.Picasso;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -44,12 +47,14 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 
 import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_ADD_COLLECT;
 import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_FIND;
 import static com.mini.paddling.minicard.protocol.net.NetRequest.REQUEST_RESULT_OK;
 
-public class CardActivity extends Activity implements NetRequest.OnRequestListener{
+public class CardActivity extends Activity implements NetRequest.OnRequestListener {
 
     public static final int REQUEST_WRITE_STORAGE_PERMISSION = 1;
     @BindView(R.id.tbv_title)
@@ -78,6 +83,8 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
     TextView tvEdit;
     @BindView(R.id.iv_collect)
     ImageView ivCollect;
+    @BindView(R.id.vp_player)
+    JZVideoPlayerStandard vpPlayer;
 
     private CardBean cardBean;
 
@@ -90,6 +97,8 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
     private static final int RES[] = new int[]{R.drawable.un_collect, R.drawable.collect};
 
     public static final String TAG = "CardActivity";
+
+    private boolean isVideo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,14 +138,37 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         tvSpecial.setText(String.format(getResources().getString(R.string.special_text),
                 cardBean.getCard_business_service(), cardBean.getCard_business_trade()));
 
-        if (cardBean.getUser_id().equals(LoginUserManager.getInstance().getUserUid())){
+        if (cardBean.getUser_id().equals(LoginUserManager.getInstance().getUserUid())) {
             ivCollect.setVisibility(View.GONE);
             tvEdit.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             ivCollect.setVisibility(View.VISIBLE);
             ivCollect.setImageResource(RES[Integer.parseInt(cardBean.getIs_collect())]);
             tvEdit.setVisibility(View.GONE);
         }
+
+        if (!TextUtils.isEmpty(cardBean.getCard_user_video())){
+            isVideo = true;
+            initVideo(cardBean.getCard_user_video(), cardBean.getCard_user_picture());
+        }else {
+            isVideo = false;
+            vpPlayer.setVisibility(View.GONE);
+            ivPicture.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void initVideo(String url, String placeImage){
+
+        vpPlayer.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "");
+
+        if (!TextUtils.isEmpty(placeImage)){
+            Picasso.with(this).load(placeImage).placeholder(R.drawable.login_bg).into(vpPlayer.thumbImageView);
+        }else {
+            vpPlayer.thumbImageView.setImageResource(R.drawable.login_bg);
+        }
+
+        ivPicture.setVisibility(View.INVISIBLE);
+        vpPlayer.setVisibility(View.VISIBLE);
     }
 
     @OnClick({R.id.tv_share, R.id.tv_edit, R.id.iv_collect})
@@ -161,9 +193,9 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
                 break;
             case R.id.iv_collect:
 
-                if (cardBean.getIs_collect().equals("0")){
+                if (cardBean.getIs_collect().equals("0")) {
                     netRequest.addCollectRequest(cardBean.getCard_id(), LoginUserManager.getInstance().getUserUid());
-                }else {
+                } else {
                     netRequest.delCollectRequest(cardBean.getCard_id(), LoginUserManager.getInstance().getUserUid());
                 }
                 break;
@@ -176,29 +208,29 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (operationType.equals(LINK_FIND)){
+                if (operationType.equals(LINK_FIND)) {
                     if (resultBean != null && resultBean instanceof BusinessBean
                             && resultBean.getRet_code().equals(REQUEST_RESULT_OK)
                             && ((BusinessBean) resultBean).getData() != null
-                            && ((BusinessBean) resultBean).getData().size() > 0){
+                            && ((BusinessBean) resultBean).getData().size() > 0) {
                         cardBean = ((BusinessBean) resultBean).getData().get(0);
                         initView();
                     }
                     return;
                 }
 
-                if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
+                if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)) {
 
                     CollectEvent collectEvent = new CollectEvent();
 
-                    if (operationType.equals(LINK_ADD_COLLECT)){
+                    if (operationType.equals(LINK_ADD_COLLECT)) {
                         ivCollect.setImageResource(RES[1]);
                         cardBean.setIs_collect("1");
                         collectEvent.setCardId(cardBean.getCard_id());
                         collectEvent.setUserId(LoginUserManager.getInstance().getUserUid());
                         collectEvent.setType(1);
 
-                    }else {
+                    } else {
                         ivCollect.setImageResource(RES[0]);
                         cardBean.setIs_collect("0");
                         collectEvent.setCardId(cardBean.getCard_id());
@@ -208,7 +240,7 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
 
                     EventBus.getDefault().post(collectEvent);
 
-                }else {
+                } else {
                     Toast.makeText(CardActivity.this, "收藏相关操作失败请重试", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -217,9 +249,31 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCommentEvent(CardEvent messageEvent) {
-        if (messageEvent != null && messageEvent.getCardBean() != null && messageEvent.getType() == 1){
+        if (messageEvent != null && messageEvent.getCardBean() != null && messageEvent.getType() == 1) {
             netRequest.findRequest(cardBean.getCard_id());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (vpPlayer.getVisibility() == View.VISIBLE){
+            vpPlayer.startWindowTiny();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
     }
 
     @Override
@@ -235,7 +289,18 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
      */
     private void shareViewBitmapToQQ() {
         try {
+            if (isVideo){
+                vpPlayer.setVisibility(View.INVISIBLE);
+                ivPicture.setVisibility(View.VISIBLE);
+            }
+
             Bitmap bitmap = CommonUtils.getViewBitmap(rlCard);
+
+            if (isVideo){
+                vpPlayer.setVisibility(View.VISIBLE);
+                ivPicture.setVisibility(View.INVISIBLE);
+            }
+
 //            String imageBase = CommonUtils.Bitmap2Base(bitmap);
             String path = FileUtils.sharePicturesPath;
             String filename = FileUtils.generateFilenameByTimeStamp(FileUtils.JPG);
@@ -252,6 +317,7 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
 
     /**
      * 分享本地文件到qq
+     *
      * @param path
      * @param filename
      */
