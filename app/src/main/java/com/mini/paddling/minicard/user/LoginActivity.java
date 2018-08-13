@@ -73,6 +73,8 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
             }
         });
 
+        tbvTitle.setTvRightBarVisible(false);
+
         typeName = getIntent().getStringExtra("title");
 
         tbvTitle.setTvTitleBar(typeName);
@@ -171,8 +173,9 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
     }
 
     private void startHome(){
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override

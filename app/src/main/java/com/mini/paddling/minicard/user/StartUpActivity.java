@@ -45,7 +45,6 @@ public class StartUpActivity extends Activity {
                 Intent loginIntent = new Intent(StartUpActivity.this, LoginActivity.class);
                 loginIntent.putExtra("title", getResources().getString(R.string.login));
                 startActivity(loginIntent);
-                finish();
             }
         });
 
@@ -55,7 +54,6 @@ public class StartUpActivity extends Activity {
                 Intent registerIntent = new Intent(StartUpActivity.this, LoginActivity.class);
                 registerIntent.putExtra("title", getResources().getString(R.string.register));
                 startActivity(registerIntent);
-                finish();
             }
         });
     }

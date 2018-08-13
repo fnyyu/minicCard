@@ -56,6 +56,10 @@ public class TitleBarView extends RelativeLayout {
         }
     }
 
+    public void setTvRightBarVisible(boolean isVisible){
+        tvRightBar.setVisibility(isVisible? VISIBLE : GONE);
+    }
+
     public void setRightBarClick(OnClickListener listener){
         tvRightBar.setOnClickListener(listener);
     }
