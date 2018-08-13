@@ -1,6 +1,9 @@
 package com.mini.paddling.minicard.protocol.bean;
 
-public class CardBean {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CardBean implements Parcelable {
     /**
      * card_id : 60002
      * user_id : 2835
@@ -31,6 +34,35 @@ public class CardBean {
      */
 
     private String is_collect = "";
+
+    public CardBean() {}
+
+    protected CardBean(Parcel in) {
+        card_id = in.readString();
+        user_id = in.readString();
+        card_business_name = in.readString();
+        card_business_trade = in.readString();
+        card_business_service = in.readString();
+        card_user_name = in.readString();
+        card_user_tel = in.readString();
+        card_user_address = in.readString();
+        card_user_slogan = in.readString();
+        card_user_picture = in.readString();
+        card_click_time = in.readString();
+        is_collect = in.readString();
+    }
+
+    public static final Creator<CardBean> CREATOR = new Creator<CardBean>() {
+        @Override
+        public CardBean createFromParcel(Parcel in) {
+            return new CardBean(in);
+        }
+
+        @Override
+        public CardBean[] newArray(int size) {
+            return new CardBean[size];
+        }
+    };
 
     public String getCard_id() {
         return card_id;
@@ -126,5 +158,26 @@ public class CardBean {
 
     public void setIs_collect(String is_collect) {
         this.is_collect = is_collect;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(card_id);
+        dest.writeString(user_id);
+        dest.writeString(card_business_name);
+        dest.writeString(card_business_trade);
+        dest.writeString(card_business_service);
+        dest.writeString(card_user_name);
+        dest.writeString(card_user_tel);
+        dest.writeString(card_user_address);
+        dest.writeString(card_user_slogan);
+        dest.writeString(card_user_picture);
+        dest.writeString(card_click_time);
+        dest.writeString(is_collect);
     }
 }

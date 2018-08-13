@@ -145,7 +145,7 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
             case R.id.tv_edit:
 
                 Intent intent = new Intent(CardActivity.this, CardEditActivity.class);
-                intent.putExtra("card", (Parcelable) cardBean);
+                intent.putExtra("card", cardBean);
                 startActivity(intent);
 
                 break;

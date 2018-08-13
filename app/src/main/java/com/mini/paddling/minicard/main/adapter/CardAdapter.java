@@ -62,7 +62,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CardActivity.class);
-                    intent.putExtra("bean", (Parcelable) card);
+                    intent.putExtra("bean", card);
                     context.startActivity(intent);
                 }
             });
