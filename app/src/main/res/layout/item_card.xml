@@ -13,23 +13,25 @@
         android:layout_height="wrap_content">
         
         <com.facebook.drawee.view.SimpleDraweeView
-            fresco:roundedCornerRadius="3dp"
+            fresco:placeholderImage="@drawable/login_bg"
+            fresco:roundedCornerRadius="4dp"
             android:id="@+id/iv_card"
             android:layout_width="match_parent"
             android:layout_height="200dp" />
 
         <RelativeLayout
-            android:background="@color/transparent_black"
+            android:background="@drawable/card_shape"
             android:layout_width="match_parent"
             android:layout_height="200dp" />
 
         <TextView
+            android:textStyle="bold"
             android:text="@string/app_name"
             android:singleLine="true"
             android:ellipsize="end"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textSize="17dp"
+            android:textSize="20dp"
             android:layout_above="@id/tv_operating"
             android:textColor="@color/white"
             android:layout_marginTop="10dp"
@@ -38,6 +40,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:textSize="16dp"
             android:text="@string/app_name"
             android:singleLine="true"
             android:ellipsize="end"
@@ -51,6 +54,8 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:textSize="16dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/app_name"
             android:singleLine="true"
             android:ellipsize="end"

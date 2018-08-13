@@ -10,9 +10,9 @@ public class UserBean {
         return "apwd";
     }
 
-    private String aname;
-    private String apwd;
-    private String userId;
+    private String aname = "";
+    private String apwd = "";
+    private String userId = "";
 
     public String getUserId() {
         return userId;

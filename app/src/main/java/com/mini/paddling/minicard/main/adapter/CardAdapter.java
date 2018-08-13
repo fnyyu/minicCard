@@ -2,8 +2,11 @@ package com.mini.paddling.minicard.main.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,11 @@ import com.mini.paddling.minicard.protocol.bean.BusinessBean;
 import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import static com.mini.paddling.minicard.protocol.net.NetRequest.REQUEST_RESULT_OK;
 
@@ -39,7 +47,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     public void setBusinessBean(BusinessBean businessBean) {
         this.businessBean = businessBean;
+        if (this.businessBean == null){
+            this.businessBean = new BusinessBean();
+        }
+
+        if (this.businessBean.getData() == null){
+            this.businessBean.setData(new ArrayList<CardBean>());
+        }
         notifyDataSetChanged();
+    }
+
+    public void addItem(CardBean cardBean){
+        businessBean.getData().add(cardBean);
+        notifyItemChanged(businessBean.getData().size() - 1);
     }
 
     @Override
@@ -73,7 +93,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                     @Override
                     public boolean onLongClick(View view) {
                         int position = holder.getLayoutPosition();
-                        onItemLongClickListener.onItemLongClick(holder.itemView,position);
+                        onItemLongClickListener.onItemLongClick(holder.ivCard, position);
                         return true;
                     }
                 });
@@ -95,9 +115,21 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     }
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
+    public void onLoadFinish(String operationType, final ResultBean resultBean) {
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                setBean(resultBean);
+            }
+        });
+    }
+
+    private void setBean(ResultBean resultBean){
+
         if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
-            Toast.makeText(context, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
             businessBean.getData().remove(delItemPos);
             notifyItemRemoved(delItemPos);
             if(delItemPos != businessBean.getData().size()){

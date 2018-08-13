@@ -70,15 +70,15 @@ public class MainActivity extends AppCompatActivity {
     private void initFragment() {
 
         Bundle bundle = new Bundle();
-        bundle.putString("userId", getIntent().getStringExtra("userId"));
         bundle.putString("portId", "collect");
 
         homeFragment = new CardFragment();
         homeFragment.setArguments(bundle);
 
-        bundle.putString("portId", "mine");
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("portId", "mine");
         cardFragment = new CardFragment();
-        cardFragment.setArguments(bundle);
+        cardFragment.setArguments(bundle2);
 
         mineFragment = new MineFragment();
         fragments = new Fragment[]{homeFragment, cardFragment, mineFragment};

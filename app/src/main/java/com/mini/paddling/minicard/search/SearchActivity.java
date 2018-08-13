@@ -141,11 +141,13 @@ public class SearchActivity extends Activity  implements SearchEditText.SearchCl
     }
 
     @Override
-    public void onLoadFinish(final String operationType, final ResultBean resultBean) {
+    public void onLoadFinish(String operationType, final ResultBean resultBean) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (resultBean != null && resultBean instanceof BusinessBean){
+                if (resultBean != null && resultBean instanceof BusinessBean
+                        && ((BusinessBean) resultBean).getData() != null
+                        &&((BusinessBean) resultBean).getData().size() > 0){
                     cardAdapter.setBusinessBean((BusinessBean) resultBean);
                     cardAdapter.notifyDataSetChanged();
                     cevEmpty.setVisibility(View.GONE);

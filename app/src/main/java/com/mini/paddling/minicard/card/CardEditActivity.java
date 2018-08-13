@@ -22,6 +22,7 @@ import com.mini.paddling.minicard.protocol.bean.CardAddBean;
 import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
+import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.CommonUtils;
 import com.mini.paddling.minicard.view.TitleBarView;
 
@@ -67,7 +68,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
 
         initTitleView();
 
-        cardBean = getIntent().getParcelableExtra("card");
+        cardBean = (CardBean) getIntent().getSerializableExtra("card");
 
         initView();
 
@@ -104,21 +105,25 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
 
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
-        if (resultBean != null && resultBean instanceof CardAddBean) {
+    public void onLoadFinish(String operationType, final ResultBean resultBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (resultBean != null) {
 
-            Toast.makeText(CardEditActivity.this, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
-            cardBean.setCard_id(((CardAddBean) resultBean).getData().getCard_id());
+                    Toast.makeText(CardEditActivity.this, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
+                    CardEvent cardEvent = new CardEvent();
+                    cardEvent.setType(1);
+                    cardEvent.setCardBean(cardBean);
+                    EventBus.getDefault().post(cardEvent);
+                    finish();
 
-            CardEvent cardEvent = new CardEvent();
-            cardEvent.setType(1);
-            cardEvent.setCardBean(cardBean);
-            EventBus.getDefault().post(cardEvent);
+                } else {
+                    Toast.makeText(CardEditActivity.this, "编辑失败,请重试", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-        } else {
-            Toast.makeText(CardEditActivity.this, "编辑失败,请重试", Toast.LENGTH_SHORT).show();
-
-        }
     }
 
     @OnClick({R.id.iv_picture, R.id.tv_commit})
@@ -212,10 +217,10 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
         // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
+        intent.putExtra("aspectX", 3);
+        intent.putExtra("aspectY", 2);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 220);
+        intent.putExtra("outputX", 330);
         intent.putExtra("outputY", 220);
         intent.putExtra("return-data", true);
         //进入系统裁剪图片的界面

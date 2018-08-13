@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
+import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.user.StartUpActivity;
 import com.mini.paddling.minicard.util.FileUtils;
 
@@ -34,7 +35,12 @@ public class SplashActivity extends Activity {
     }
 
     private void intentHome() {
-        Intent intent = new Intent(SplashActivity.this, StartUpActivity.class);
+        Intent intent;
+        if (LoginUserManager.getInstance().isLogin()){
+             intent = new Intent(SplashActivity.this, MainActivity.class);
+        }else {
+            intent = new Intent(SplashActivity.this, StartUpActivity.class);
+        }
         startActivity(intent);
         finish();
     }
