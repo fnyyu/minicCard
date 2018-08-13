@@ -14,6 +14,11 @@ public class FileUtils {
     public static final String BMP = ".bmp";
 
     /**
+     * 应用启动时设值
+     */
+    public static String sharePicturesPath;
+
+    /**
      * 按时间戳生成文件名
      * @param format
      * @return
@@ -63,6 +68,20 @@ public class FileUtils {
         File file = new File(path, filename);
         if (file.exists() && file.isFile()) {
             file.delete();
+        }
+    }
+
+    /**
+     * 清空目录，保留目录本身
+     * @param path
+     */
+    public static void clearDir(String path) {
+        File dir = new File(path);
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                file.delete();
+            }
         }
     }
 }

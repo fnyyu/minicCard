@@ -211,12 +211,14 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         try {
             Bitmap bitmap = CommonUtils.getViewBitmap(rlCard);
 //            String imageBase = CommonUtils.Bitmap2Base(bitmap);
-            String path = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+            String path = FileUtils.sharePicturesPath;
             String filename = FileUtils.generateFilenameByTimeStamp(FileUtils.JPG);
 
             FileUtils.saveBitmap(bitmap, path, filename);
             shareToQQ(path, filename);
-            FileUtils.deleteFile(path, filename);
+
+            //分享是异步，直接删除会导致分享图片失效。改成应用启动时统一删除
+//            FileUtils.deleteFile(path, filename);
         } catch (IOException e) {
             LogUtils.i(TAG, e);
         }
