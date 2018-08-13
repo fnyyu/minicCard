@@ -61,10 +61,12 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     EditText etGexing;
     @BindView(R.id.tv_commit)
     TextView tvCommit;
-    @BindView(R.id.iv_picture)
-    ImageView ivPicture;
     @BindView(R.id.vv_picture)
     VideoView vvPicture;
+    @BindView(R.id.iv_video)
+    ImageView ivVideo;
+    @BindView(R.id.iv_picture)
+    ImageView ivPicture;
 
     private NetRequest netRequest;
 
@@ -142,7 +144,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                 break;
             case R.id.tv_commit:
 
-                if (TextUtils.isEmpty(etTitle.getText())){
+                if (TextUtils.isEmpty(etTitle.getText())) {
                     Toast.makeText(CardAddActivity.this, "店铺名称不准为空!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -179,9 +181,9 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                     Bitmap businessBitmap = extras.getParcelable("data");
                     if (businessBitmap != null) {
                         cardBean.setCard_user_picture("data:image/jpeg;base64," + CommonUtils.Bitmap2Base(businessBitmap));
-                        try{
+                        try {
                             ivPicture.setImageBitmap(businessBitmap);
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }

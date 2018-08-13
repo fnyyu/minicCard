@@ -33,7 +33,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.net.URI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,10 +64,10 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     ImageView ivPicture;
     @BindView(R.id.iv_src)
     SimpleDraweeView ivSrc;
+    @BindView(R.id.iv_video)
+    ImageView ivVideo;
     @BindView(R.id.vv_picture)
     VideoView vvPicture;
-    @BindView(R.id.vv_src)
-    SimpleDraweeView vvSrc;
 
     private NetRequest netRequest;
 
@@ -98,10 +97,10 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         etPhone.setText(cardBean.getCard_user_tel());
         etManager.setText(cardBean.getCard_business_service());
 
-        if (TextUtils.isEmpty(cardBean.getCard_user_picture())){
+        if (TextUtils.isEmpty(cardBean.getCard_user_picture())) {
             ivSrc.setVisibility(View.INVISIBLE);
             ivPicture.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             ivSrc.setImageURI(cardBean.getCard_user_picture());
             ivPicture.setVisibility(View.INVISIBLE);
             ivSrc.setVisibility(View.VISIBLE);
@@ -149,14 +148,14 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
 
     }
 
-    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_src, R.id.vv_picture, R.id.vv_src})
+    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_src, R.id.vv_picture, R.id.iv_video})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_src:
             case R.id.iv_picture:
                 showSelectImageDialog();
                 break;
-            case R.id.vv_src:
+            case R.id.iv_video:
             case R.id.vv_picture:
                 showSelectVideoDialog();
                 break;

@@ -38,7 +38,6 @@ public class CardBean implements Serializable{
      * card_user_video : http://139.199.230.96/ypxt//js/upload/uploadfile2/test_video.mp4
      */
 
-    private String card_user_video;
 
     public String getCard_id() {
         return card_id;
@@ -118,14 +117,6 @@ public class CardBean implements Serializable{
 
     public void setCard_user_picture(String card_user_picture) {
         this.card_user_picture = card_user_picture;
-    }
-
-    public String getCard_user_video() {
-        return card_user_video;
-    }
-
-    public void setCard_user_video(String card_user_video) {
-        this.card_user_video = card_user_video;
     }
 
     public String getCard_click_time() {
