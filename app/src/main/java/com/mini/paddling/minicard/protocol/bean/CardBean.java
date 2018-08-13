@@ -1,6 +1,8 @@
 package com.mini.paddling.minicard.protocol.bean;
 
-public class CardBean {
+import java.io.Serializable;
+
+public class CardBean implements Serializable{
     /**
      * card_id : 60002
      * user_id : 2835

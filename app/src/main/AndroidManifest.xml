@@ -47,6 +47,10 @@
         <activity android:name=".card.CardActivity"/>
 
         <activity android:name=".card.CardEditActivity"/>
+
+        <activity android:name="com.tencent.tauth.AuthActivity"/>
+
+        <activity android:name="com.tencent.connect.common.AssistActivity"/>
     </application>
 
 </manifest>

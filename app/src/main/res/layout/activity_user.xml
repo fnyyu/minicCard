@@ -34,6 +34,7 @@
         android:layout_height="wrap_content">
 
     <EditText
+        android:inputType="textPassword"
         android:id="@+id/et_password"
         android:hint="@string/password"
         android:layout_width="match_parent"
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content">
 
     <EditText
+        android:inputType="textPassword"
         android:id="@+id/et_conform"
         android:hint="@string/confirm"
         android:layout_width="match_parent"

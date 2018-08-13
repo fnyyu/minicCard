@@ -1,5 +1,6 @@
 package com.mini.paddling.minicard.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mini.paddling.minicard.R;
-import com.mini.paddling.minicard.main.adapter.CardAdapter;
+import com.mini.paddling.minicard.user.LoginUserManager;
+import com.mini.paddling.minicard.user.StartUpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,6 +20,8 @@ public class MineFragment extends Fragment {
 
     @BindView(R.id.tv_user)
     TextView tvUser;
+    @BindView(R.id.tv_out)
+    TextView tvOut;
 
     private View viewRoot;
 
@@ -39,7 +43,16 @@ public class MineFragment extends Fragment {
     }
 
     private void initView() {
+        tvUser.setText(LoginUserManager.getInstance().getUserName());
 
+        tvOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginUserManager.getInstance().logOut();
+                getActivity().startActivity(new Intent(getActivity(), StartUpActivity.class));
+                getActivity().finish();
+            }
+        });
     }
 
 }

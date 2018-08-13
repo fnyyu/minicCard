@@ -24,4 +24,6 @@ public class LinksBean {
 
     public static final String LINK_EDIT = LINK + "card/editcard";
 
+    public static final String LINK_FIND = LINK + "card/getcard?card_id=";
+
 }

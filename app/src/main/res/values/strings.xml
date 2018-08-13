@@ -21,6 +21,7 @@
     <string name="sign">个性签名</string>
 
     <string name="login">登录</string>
+    <string name="logout">退出登录</string>
     <string name="register">注册</string>
     <string name="commit">提交</string>
     <string name="edit">编辑</string>

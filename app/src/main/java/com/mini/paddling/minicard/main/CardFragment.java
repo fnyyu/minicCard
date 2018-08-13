@@ -1,38 +1,50 @@
 package com.mini.paddling.minicard.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.card.CardAddActivity;
+import com.mini.paddling.minicard.event.CardEvent;
+import com.mini.paddling.minicard.event.CollectEvent;
 import com.mini.paddling.minicard.main.adapter.CardAdapter;
 import com.mini.paddling.minicard.protocol.bean.BusinessBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
 import com.mini.paddling.minicard.search.HomeSearchView;
 import com.mini.paddling.minicard.search.SearchActivity;
+import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.LogUtils;
 import com.mini.paddling.minicard.view.CommonEmptyView;
 
-import java.util.concurrent.BrokenBarrierException;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.mini.paddling.minicard.protocol.net.NetRequest.REQUEST_RESULT_OK;
+import static com.mini.paddling.minicard.util.CommonUtils.dip2px;
+import static com.mini.paddling.minicard.util.CommonUtils.getScreenWidth;
 
 public class CardFragment extends Fragment implements NetRequest.OnRequestListener {
 
@@ -44,6 +56,8 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
     CommonEmptyView cevEmpty;
     @BindView(R.id.fab_add)
     FloatingActionButton fabAdd;
+    @BindView(R.id.srl_refresh)
+    SwipeRefreshLayout srlRefresh;
     private View viewRoot;
 
     private CardAdapter cardAdapter;
@@ -52,6 +66,10 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
 
     private boolean isCardPage;
     private String userId;
+
+    private BusinessBean businessBean;
+
+    private int popupWindowX;
 
     public static final String TAG = "CardFragment";
 
@@ -68,8 +86,12 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
 
         if (isAdded()) {
             isCardPage = getArguments().getString("portId").equals("mine");
-            userId = getArguments().getString("userId");
+            userId = LoginUserManager.getInstance().getUserUid();
         }
+
+        EventBus.getDefault().register(this);
+
+        popupWindowX = Math.abs((getScreenWidth(getActivity()) - dip2px(getActivity(), 100)) / 2);
 
         initView();
 
@@ -79,7 +101,7 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
 
     private void initView() {
 
-        hsvSearch.setOnSearchClickListener(new View.OnClickListener() {
+        hsvSearch.setOnSearchIntentListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), SearchActivity.class));
@@ -95,19 +117,39 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
         if (isCardPage) {
             fabAdd.setVisibility(View.VISIBLE);
             cevEmpty.setTvEmptyString(getResources().getString(R.string.add_card));
-            request.businessGetRequest(getActivity().getIntent().getStringExtra("userId"));
+            request.businessGetRequest(LoginUserManager.getInstance().getUserUid());
         } else {
             fabAdd.setVisibility(View.INVISIBLE);
             cevEmpty.setTvEmptyString(getResources().getString(R.string.add_collect));
-            request.collectGetRequest(getActivity().getIntent().getStringExtra("userId"));
+            request.collectGetRequest(LoginUserManager.getInstance().getUserUid());
         }
 
         cardAdapter.setOnItemLongClickListener(new CardAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(View view, int position) {
-                showPopMenu(view, position);
+                showPopupWindow(view, position);
             }
         });
+
+        srlRefresh.setProgressBackgroundColorSchemeResource(android.R.color.white);
+        srlRefresh.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light, android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
+        srlRefresh.setProgressViewOffset(false, 0, (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
+                        .getDisplayMetrics()));
+
+        srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isCardPage) {
+                    request.businessGetRequest(LoginUserManager.getInstance().getUserUid());
+                } else {
+                    request.collectGetRequest(LoginUserManager.getInstance().getUserUid());
+                }
+            }
+        });
+
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
@@ -120,44 +162,101 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
     @Override
     public void onLoadFinish(String operationType, ResultBean resultBean) {
         if (resultBean != null && resultBean instanceof BusinessBean) {
-            BusinessBean businessBean = (BusinessBean) resultBean;
 
-            if (businessBean.getRet_code().equals(REQUEST_RESULT_OK)) {
-                cevEmpty.setVisibility(View.GONE);
-                cardAdapter.setBusinessBean(businessBean);
-            } else {
-                cevEmpty.setVisibility(View.VISIBLE);
-            }
-        }else {
-            cevEmpty.setVisibility(View.VISIBLE);
+            srlRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (srlRefresh.isRefreshing()){
+                        srlRefresh.setRefreshing(false);
+                    }
+                }
+            });
+
+
+            businessBean = (BusinessBean) resultBean;
+            rlvCard.post(new Runnable() {
+                @Override
+                public void run() {
+                    cardAdapter.setBusinessBean(businessBean);
+                }
+            });
+
+            cevEmpty.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (businessBean.getRet_code().equals(REQUEST_RESULT_OK)) {
+                        cevEmpty.setVisibility(View.GONE);
+
+                    } else {
+                        cevEmpty.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+
+        } else {
+            cevEmpty.post(new Runnable() {
+                @Override
+                public void run() {
+                    cevEmpty.setVisibility(View.VISIBLE);
+                }
+            });
+
         }
         countDownLatch.countDown();
     }
 
-    public void showPopMenu(View view,final int pos){
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-        popupMenu.getMenuInflater().inflate(R.menu.item_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-
-                cardAdapter.removeItem(pos);
-                return false;
-            }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+    private void showPopupWindow(View view, final int pos) {
+        //设置contentView
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_delete, null);
+        final PopupWindow popupWindow = new PopupWindow(contentView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setContentView(contentView);
+        TextView tvDelete = contentView.findViewById(R.id.tv_delete);
+        tvDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDismiss(PopupMenu menu) {
+            public void onClick(View v) {
+                cardAdapter.removeItem(pos);
+                if (popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
 
             }
         });
-        popupMenu.show();
+        popupWindow.setOutsideTouchable(true);
+
+        popupWindow.showAsDropDown(view, popupWindowX, 0);
+        popupWindow.update();
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCardEvent(CardEvent messageEvent) {
+        if (isCardPage && messageEvent != null && messageEvent.getCardBean() != null) {
+            request.businessGetRequest(LoginUserManager.getInstance().getUserUid());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCollectEvent(CollectEvent messageEvent) {
+        if (!isCardPage && messageEvent != null) {
+            request.collectGetRequest(LoginUserManager.getInstance().getUserUid());
+        }
     }
 
 
     @OnClick(R.id.fab_add)
     public void onViewClicked() {
         Intent intent = new Intent(getActivity(), CardAddActivity.class);
-        intent.putExtra("userId", userId);
         startActivity(intent);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
 }

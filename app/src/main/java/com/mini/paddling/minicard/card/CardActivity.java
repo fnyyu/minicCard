@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -21,9 +22,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.event.CardEvent;
 import com.mini.paddling.minicard.event.CollectEvent;
+import com.mini.paddling.minicard.protocol.bean.BusinessBean;
 import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
+import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.CommonUtils;
 import com.mini.paddling.minicard.util.FileUtils;
 import com.mini.paddling.minicard.util.LogUtils;
@@ -45,6 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_ADD_COLLECT;
+import static com.mini.paddling.minicard.protocol.bean.LinksBean.LINK_FIND;
 import static com.mini.paddling.minicard.protocol.net.NetRequest.REQUEST_RESULT_OK;
 
 public class CardActivity extends Activity implements NetRequest.OnRequestListener{
@@ -95,7 +99,7 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         setContentView(R.layout.activity_card);
         ButterKnife.bind(this);
 
-        cardBean = getIntent().getParcelableExtra("bean");
+        cardBean = (CardBean) getIntent().getSerializableExtra("bean");
 
         initTitleView();
         initView();
@@ -123,10 +127,18 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         tvAddress.setText(cardBean.getCard_user_address());
         tvGexing.setText(cardBean.getCard_user_slogan());
         tvPhone.setText(cardBean.getCard_user_tel());
+        tvState.setText(cardBean.getCard_id());
         tvSpecial.setText(String.format(getResources().getString(R.string.special_text),
                 cardBean.getCard_business_service(), cardBean.getCard_business_trade()));
 
-        ivCollect.setImageResource(RES[Integer.parseInt(cardBean.getIs_collect())]);
+        if (cardBean.getUser_id().equals(LoginUserManager.getInstance().getUserUid())){
+            ivCollect.setVisibility(View.GONE);
+            tvEdit.setVisibility(View.VISIBLE);
+        }else{
+            ivCollect.setVisibility(View.VISIBLE);
+            ivCollect.setImageResource(RES[Integer.parseInt(cardBean.getIs_collect())]);
+            tvEdit.setVisibility(View.GONE);
+        }
     }
 
     @OnClick({R.id.tv_share, R.id.tv_edit, R.id.iv_collect})
@@ -145,16 +157,16 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
             case R.id.tv_edit:
 
                 Intent intent = new Intent(CardActivity.this, CardEditActivity.class);
-                intent.putExtra("card", (Parcelable) cardBean);
+                intent.putExtra("card", cardBean);
                 startActivity(intent);
 
                 break;
             case R.id.iv_collect:
 
-                if (cardBean.getIs_collect().equals("1")){
-                    netRequest.addCollectRequest(cardBean);
+                if (cardBean.getIs_collect().equals("0")){
+                    netRequest.addCollectRequest(cardBean.getCard_id(), LoginUserManager.getInstance().getUserUid());
                 }else {
-                    netRequest.delCollectRequest(cardBean);
+                    netRequest.delCollectRequest(cardBean.getCard_id(), LoginUserManager.getInstance().getUserUid());
                 }
                 break;
         }
@@ -162,37 +174,55 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
 
 
     @Override
-    public void onLoadFinish(String operationType, ResultBean resultBean) {
-        if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
+    public void onLoadFinish(final String operationType, final ResultBean resultBean) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-            CollectEvent collectEvent = new CollectEvent();
+                if (operationType.equals(LINK_FIND)){
+                    if (resultBean != null && resultBean instanceof BusinessBean
+                            && resultBean.getRet_code().equals(REQUEST_RESULT_OK)
+                            && ((BusinessBean) resultBean).getData() != null
+                            && ((BusinessBean) resultBean).getData().size() > 0){
+                        cardBean = ((BusinessBean) resultBean).getData().get(0);
+                        initView();
+                    }
+                    return;
+                }
 
-            if (operationType.equals(LINK_ADD_COLLECT)){
-                ivCollect.setImageResource(RES[1]);
+                if (resultBean != null && resultBean.getRet_code().equals(REQUEST_RESULT_OK)){
 
-                collectEvent.setCardId(cardBean.getCard_id());
-                collectEvent.setUserId(cardBean.getUser_id());
-                collectEvent.setType(1);
+                    CollectEvent collectEvent = new CollectEvent();
 
-            }else {
-                ivCollect.setImageResource(RES[0]);
-                collectEvent.setCardId(cardBean.getCard_id());
-                collectEvent.setUserId(cardBean.getUser_id());
-                collectEvent.setType(0);
+                    if (operationType.equals(LINK_ADD_COLLECT)){
+                        ivCollect.setImageResource(RES[1]);
+                        cardBean.setIs_collect("1");
+                        collectEvent.setCardId(cardBean.getCard_id());
+                        collectEvent.setUserId(LoginUserManager.getInstance().getUserUid());
+                        collectEvent.setType(1);
+
+                    }else {
+                        ivCollect.setImageResource(RES[0]);
+                        cardBean.setIs_collect("0");
+                        collectEvent.setCardId(cardBean.getCard_id());
+                        collectEvent.setUserId(LoginUserManager.getInstance().getUserUid());
+                        collectEvent.setType(0);
+                    }
+
+                    EventBus.getDefault().post(collectEvent);
+
+                }else {
+                    Toast.makeText(CardActivity.this, "收藏相关操作失败请重试", Toast.LENGTH_SHORT).show();
+                }
             }
+        });
 
-            EventBus.getDefault().post(collectEvent);
-
-        }else {
-            Toast.makeText(CardActivity.this, "收藏相关操作失败请重试", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCommentEvent(CardEvent messageEvent) {
         if (messageEvent != null && messageEvent.getCardBean() != null && messageEvent.getType() == 1){
-            this.cardBean = messageEvent.getCardBean();
-            initView();
+            netRequest.findRequest(cardBean.getCard_id());
         }
     }
 

@@ -79,6 +79,7 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
         tbvTitle.setTvRightBar(getResources().getString(R.string.cancel));
 
         isLogin = typeName.equals(getResources().getString(R.string.login));
+        tvEdit.setText(typeName);
         textInputConfirm.setVisibility(isLogin ? View.INVISIBLE : View.VISIBLE);
 
         netRequest = new NetRequest(this);
@@ -169,9 +170,8 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
         }
     }
 
-    private void startHome(int userId){
+    private void startHome(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("userId", String.valueOf(userId));
         startActivity(intent);
     }
 
@@ -187,7 +187,9 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
                     if (loginBean.getRet_code().equals(REQUEST_RESULT_OK)){
 
                         if (operationType.equals(LINK_LOGIN) && loginBean.getData()!= null){
-                            startHome(loginBean.getData().getUser_id());
+                            userBean.setUserId(String.valueOf(loginBean.getData().getUser_id()));
+                            LoginUserManager.getInstance().doLogin(userBean);
+                            startHome();
                         }else {
                             netRequest.loginRequest(userBean);
                         }
