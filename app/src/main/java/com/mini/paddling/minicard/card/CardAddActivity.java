@@ -10,11 +10,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.event.CardEvent;
@@ -24,6 +26,7 @@ import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
 import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.CommonUtils;
+import com.mini.paddling.minicard.util.FileUtils;
 import com.mini.paddling.minicard.view.TitleBarView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,6 +41,11 @@ import butterknife.OnClick;
 
 
 public class CardAddActivity extends Activity implements NetRequest.OnRequestListener {
+
+    public static final Uri URI_IMAGE = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    public static final Uri URI_VIDEO = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+    public static final String TYPE_IMAGE = "image/*";
+    public static final String TYPE_VIDEO = "video/*";
 
     @BindView(R.id.tbv_title)
     TitleBarView tbvTitle;
@@ -55,6 +63,8 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     TextView tvCommit;
     @BindView(R.id.iv_picture)
     ImageView ivPicture;
+    @BindView(R.id.vv_picture)
+    VideoView vvPicture;
 
     private NetRequest netRequest;
 
@@ -121,11 +131,14 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
 
     }
 
-    @OnClick({R.id.iv_picture, R.id.tv_commit})
+    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.vv_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_picture:
-                showTypeDialog();
+                showSelectImageDialog();
+                break;
+            case R.id.vv_picture:
+                showSelectVideoDialog();
                 break;
             case R.id.tv_commit:
 
@@ -174,10 +187,26 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                     }
                 }
                 break;
+            case 3:
+                String dataString = data.getDataString();
+                if (dataString != null) {
+                    Uri uri = Uri.parse(dataString);
+                    File file1 = new File(FileUtils.getRealFilePath(this, uri));
+                    File file = new File(getApplicationContext().getExternalCacheDir(), "Videos/VID_20180813_212323.mp4");
+                    byte[] bytes = FileUtils.getBytesFromFile(this, file);
+                    String base = CommonUtils.byteArray2Base(bytes);
+
+                    String fileFormat = file.getName().substring(file.getName().indexOf('.') + 1);
+
+                    cardBean.setCard_user_video("data:video/" + fileFormat + ";base64," + base);
+                    vvPicture.setVideoURI(Uri.parse(dataString));
+                    Log.v("", "");
+                }
+                break;
         }
     }
 
-    private void showTypeDialog() {
+    private void showSelectImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CardAddActivity.this);
         final AlertDialog dialog = builder.create();
         View view = View.inflate(CardAddActivity.this, R.layout.dialog_select_photo, null);
@@ -187,7 +216,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(Intent.ACTION_PICK, null);
-                intent1.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                intent1.setDataAndType(URI_IMAGE, TYPE_IMAGE);
                 startActivityForResult(intent1, 0);
                 dialog.dismiss();
             }
@@ -202,6 +231,35 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                 dialog.dismiss();
             }
         });
+        dialog.setView(view);
+        dialog.show();
+    }
+
+    private void showSelectVideoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CardAddActivity.this);
+        final AlertDialog dialog = builder.create();
+        View view = View.inflate(CardAddActivity.this, R.layout.dialog_select_photo, null);
+        TextView tv_select_gallery = view.findViewById(R.id.tv_select_gallery);
+//        TextView tv_select_camera = view.findViewById(R.id.tv_select_camera);
+        tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在视频库中选取
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(Intent.ACTION_PICK, null);
+                intent1.setDataAndType(URI_VIDEO, TYPE_VIDEO);
+                startActivityForResult(intent1, 3);
+                dialog.dismiss();
+            }
+        });
+//        tv_select_camera.setOnClickListener(new View.OnClickListener() {// 调用照相机
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent2.putExtra(MediaStore.EXTRA_OUTPUT,
+//                        Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "businessBitmap.jpg")));
+//                startActivityForResult(intent2, 1);// 采用ForResult打开
+//                dialog.dismiss();
+//            }
+//        });
         dialog.setView(view);
         dialog.show();
     }
