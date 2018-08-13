@@ -47,7 +47,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".card.CardEditActivity"/>
+        <activity android:name=".card.CardAddOrEditActivity"/>
 
         <!--QQ分享相关-->
         <activity

@@ -114,17 +114,6 @@
         android:layout_width="75dp"
         android:layout_height="50dp"/>
 
-    <ImageView
-        android:layout_toRightOf="@id/iv_picture"
-        android:src="@drawable/collect_video"
-        android:layout_below="@+id/tl_gexing"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="50dp"
-        android:scaleType="center"
-        android:id="@+id/iv_video"
-        android:layout_width="75dp"
-        android:layout_height="50dp"/>
-
     <VideoView
         android:src="@drawable/collect_video"
         android:layout_toEndOf="@id/iv_src"
@@ -133,6 +122,17 @@
         android:layout_marginLeft="50dp"
         android:scaleType="fitCenter"
         android:id="@+id/vv_picture"
+        android:layout_width="75dp"
+        android:layout_height="50dp"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_toRightOf="@id/iv_picture"
+        android:src="@drawable/icon_video"
+        android:layout_below="@+id/tl_gexing"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp"
+        android:scaleType="center"
+        android:id="@+id/iv_video"
         android:layout_width="75dp"
         android:layout_height="50dp"/>
 
