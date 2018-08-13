@@ -8,6 +8,9 @@ import android.view.WindowManager;
 
 import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.user.StartUpActivity;
+import com.mini.paddling.minicard.util.FileUtils;
+
+import java.io.File;
 
 public class SplashActivity extends Activity {
 
@@ -15,6 +18,9 @@ public class SplashActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        FileUtils.sharePicturesPath = new File(getApplicationContext().getExternalCacheDir(), "/SharePictures/").getAbsolutePath();
+        FileUtils.clearDir(FileUtils.sharePicturesPath);
     }
 
     @Override

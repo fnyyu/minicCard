@@ -156,7 +156,6 @@ public class SearchActivity extends Activity  implements SearchEditText.SearchCl
                 }
             }
         });
-
     }
 
     private class SearchTextWatcher implements TextWatcher {

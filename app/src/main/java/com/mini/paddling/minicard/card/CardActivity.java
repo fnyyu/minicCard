@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -178,7 +176,6 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 if (operationType.equals(LINK_FIND)){
                     if (resultBean != null && resultBean instanceof BusinessBean
                             && resultBean.getRet_code().equals(REQUEST_RESULT_OK)
@@ -216,7 +213,6 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
                 }
             }
         });
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -241,12 +237,14 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
         try {
             Bitmap bitmap = CommonUtils.getViewBitmap(rlCard);
 //            String imageBase = CommonUtils.Bitmap2Base(bitmap);
-            String path = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+            String path = FileUtils.sharePicturesPath;
             String filename = FileUtils.generateFilenameByTimeStamp(FileUtils.JPG);
 
             FileUtils.saveBitmap(bitmap, path, filename);
             shareToQQ(path, filename);
-            FileUtils.deleteFile(path, filename);
+
+            //分享是异步，直接删除会导致分享图片失效。改成应用启动时统一删除
+//            FileUtils.deleteFile(path, filename);
         } catch (IOException e) {
             LogUtils.i(TAG, e);
         }
