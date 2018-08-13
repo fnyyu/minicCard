@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,6 +79,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                     card.getCard_business_service(), card.getCard_business_trade()));
             holder.tvAddress.setText(card.getCard_user_address());
             holder.tvTitle.setText(card.getCard_business_name());
+
+            holder.ivVideoIcon.setVisibility(TextUtils.isEmpty(card.getCard_user_video()) ?
+                    View.INVISIBLE : View.VISIBLE);
 
             holder.ivCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -156,6 +161,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         private TextView tvTitle;
         private TextView tvSpecia;
         private TextView tvAddress;
+        private ImageView ivVideoIcon;
 
         public CardViewHolder(View itemView) {
             super(itemView);
@@ -163,6 +169,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvAddress = itemView.findViewById(R.id.tv_operating);
             tvSpecia = itemView.findViewById(R.id.tv_address);
+            ivVideoIcon = itemView.findViewById(R.id.iv_video_icon);
         }
     }
 }
