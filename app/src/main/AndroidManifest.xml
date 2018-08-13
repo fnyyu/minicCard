@@ -43,7 +43,9 @@
 
         <activity android:name=".search.SearchActivity"/>
 
-        <activity android:name=".card.CardActivity"/>
+        <activity android:name=".card.CardActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
 
         <activity android:name=".card.CardEditActivity"/>
 

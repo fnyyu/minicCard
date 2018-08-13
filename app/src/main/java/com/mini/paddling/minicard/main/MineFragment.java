@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.user.StartUpActivity;
@@ -18,10 +20,18 @@ import butterknife.ButterKnife;
 
 public class MineFragment extends Fragment {
 
-    @BindView(R.id.tv_user)
-    TextView tvUser;
-    @BindView(R.id.tv_out)
-    TextView tvOut;
+    @BindView(R.id.iv_avatar)
+    SimpleDraweeView ivAvatar;
+    @BindView(R.id.tv_avatar)
+    TextView tvAvatar;
+    @BindView(R.id.mine_top)
+    RelativeLayout mineTop;
+    @BindView(R.id.rl_setting)
+    TextView rlSetting;
+    @BindView(R.id.container)
+    RelativeLayout container;
+    @BindView(R.id.rl_logout)
+    TextView rlLogout;
 
     private View viewRoot;
 
@@ -31,7 +41,7 @@ public class MineFragment extends Fragment {
 
         if (isAdded() && getActivity() != null) {
             if (viewRoot == null) {
-                viewRoot = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_mine, container, false);
+                viewRoot = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_me, container, false);
             }
         }
         ButterKnife.bind(this, viewRoot);
@@ -43,9 +53,9 @@ public class MineFragment extends Fragment {
     }
 
     private void initView() {
-        tvUser.setText(LoginUserManager.getInstance().getUserName());
+        tvAvatar.setText(LoginUserManager.getInstance().getUserName());
 
-        tvOut.setOnClickListener(new View.OnClickListener() {
+        rlLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoginUserManager.getInstance().logOut();
@@ -55,4 +65,8 @@ public class MineFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

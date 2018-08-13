@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.mini.paddling.minicard.view.DropZoomScrollView
+        android:background="@color/theme_grey"
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:background="@drawable/mine_bg"
+                android:id="@+id/mine_top"
+                android:paddingTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <RelativeLayout
+                    android:id="@+id/iv_shape"
+                    android:layout_marginTop="69dp"
+                    android:background="@drawable/avatar_shape"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"/>
+                
+                <com.facebook.drawee.view.SimpleDraweeView
+                    fresco:placeholderImage="@drawable/login_bg"
+                    fresco:roundAsCircle="true"
+                    android:layout_marginTop="70dp"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/iv_avatar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp" />
+
+                <TextView
+                    android:id="@+id/tv_avatar"
+                    android:textSize="16sp"
+                    android:layout_marginTop="17dp"
+                    android:textColor="@color/white"
+                    android:layout_below="@+id/iv_avatar"
+                    android:singleLine="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_below="@+id/mine_top"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/rl_setting"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:drawablePadding="7dp"
+                    android:drawableRight="@drawable/right"
+                    android:drawableLeft="@drawable/mine_setting"
+                    android:textColor="@color/text_black"
+                    android:text="@string/mine_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/rl_logout"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:drawablePadding="7dp"
+                    android:drawableRight="@drawable/right"
+                    android:drawableLeft="@drawable/setting_logout"
+                    android:textColor="@color/text_black"
+                    android:text="@string/logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.mini.paddling.minicard.view.DropZoomScrollView>
+    
+
+</RelativeLayout>
