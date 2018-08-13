@@ -194,7 +194,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                 if (dataString != null) {
                     Uri uri = Uri.parse(dataString);
                     File realFile = new File(FileUtils.getRealFilePath(this, uri));
-                    String filename = "Video/" + realFile.getName();
+                    String filename = "Videos/" + realFile.getName();
 
                     File file = new File(getApplicationContext().getExternalCacheDir(), filename);
                     byte[] bytes = FileUtils.getBytesFromFile(this, file);
@@ -242,7 +242,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     private void showSelectVideoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CardAddActivity.this);
         final AlertDialog dialog = builder.create();
-        View view = View.inflate(CardAddActivity.this, R.layout.dialog_select_photo, null);
+        View view = View.inflate(CardAddActivity.this, R.layout.dialog_select_video, null);
         TextView tv_select_gallery = view.findViewById(R.id.tv_select_gallery);
 //        TextView tv_select_camera = view.findViewById(R.id.tv_select_camera);
         tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在视频库中选取

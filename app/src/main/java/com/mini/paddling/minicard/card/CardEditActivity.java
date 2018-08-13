@@ -213,7 +213,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                 if (dataString != null) {
                     Uri uri = Uri.parse(dataString);
                     File realFile = new File(FileUtils.getRealFilePath(this, uri));
-                    String filename = "Video/" + realFile.getName();
+                    String filename = "Videos/" + realFile.getName();
 
                     File file = new File(getApplicationContext().getExternalCacheDir(), filename);
                     byte[] bytes = FileUtils.getBytesFromFile(this, file);
