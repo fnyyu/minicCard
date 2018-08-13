@@ -16,13 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.event.CardEvent;
-import com.mini.paddling.minicard.protocol.bean.CardAddBean;
 import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
-import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.CommonUtils;
 import com.mini.paddling.minicard.view.TitleBarView;
 
@@ -55,6 +54,8 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     TextView tvCommit;
     @BindView(R.id.iv_picture)
     ImageView ivPicture;
+    @BindView(R.id.iv_src)
+    SimpleDraweeView ivSrc;
 
     private NetRequest netRequest;
 
@@ -83,6 +84,15 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         etAddress.setText(cardBean.getCard_user_address());
         etPhone.setText(cardBean.getCard_user_tel());
         etManager.setText(cardBean.getCard_business_service());
+
+        if (TextUtils.isEmpty(cardBean.getCard_user_picture())){
+            ivSrc.setVisibility(View.INVISIBLE);
+            ivPicture.setVisibility(View.VISIBLE);
+        }else {
+            ivSrc.setImageURI(cardBean.getCard_user_picture());
+            ivPicture.setVisibility(View.INVISIBLE);
+            ivSrc.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initTitleView() {
@@ -126,15 +136,16 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
 
     }
 
-    @OnClick({R.id.iv_picture, R.id.tv_commit})
+    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_src})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.iv_src:
             case R.id.iv_picture:
                 showTypeDialog();
                 break;
             case R.id.tv_commit:
 
-                if (TextUtils.isEmpty(etTitle.getText())){
+                if (TextUtils.isEmpty(etTitle.getText())) {
                     Toast.makeText(CardEditActivity.this, "店铺名称不准为空!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -170,10 +181,12 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                     Bundle extras = data.getExtras();
                     Bitmap businessBitmap = extras.getParcelable("data");
                     if (businessBitmap != null) {
-                        cardBean.setCard_user_picture(CommonUtils.Bitmap2Base(businessBitmap));
-                        try{
+                        cardBean.setCard_user_picture("data:image/jpeg;base64," + CommonUtils.Bitmap2Base(businessBitmap));
+                        try {
+                            ivSrc.setVisibility(View.INVISIBLE);
+                            ivPicture.setVisibility(View.VISIBLE);
                             ivPicture.setImageBitmap(businessBitmap);
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }

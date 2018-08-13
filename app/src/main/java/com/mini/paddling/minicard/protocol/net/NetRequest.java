@@ -262,7 +262,7 @@ public class NetRequest {
                 .add("card_user_tel", bean.getCard_user_tel())
                 .add("card_user_address", bean.getCard_user_address())
                 .add("card_user_slogan", bean.getCard_user_slogan())
-                .add("card_user_picture", "data:image/jpeg;base64," + bean.getCard_user_picture())
+                .add("card_user_picture", bean.getCard_user_picture())
                 .add("card_click_time", bean.getCard_click_time())
                 .build();
 
@@ -321,7 +321,7 @@ public class NetRequest {
                 .add("card_user_tel", bean.getCard_user_tel())
                 .add("card_user_address", bean.getCard_user_address())
                 .add("card_user_slogan", bean.getCard_user_slogan())
-                .add("card_user_picture", "data:image/jpeg;base64," + bean.getCard_user_picture())
+                .add("card_user_picture", bean.getCard_user_picture())
                 .add("card_click_time", bean.getCard_click_time())
                 .build();
 

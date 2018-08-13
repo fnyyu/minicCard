@@ -165,7 +165,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                     Bundle extras = data.getExtras();
                     Bitmap businessBitmap = extras.getParcelable("data");
                     if (businessBitmap != null) {
-                        cardBean.setCard_user_picture(CommonUtils.Bitmap2Base(businessBitmap));
+                        cardBean.setCard_user_picture("data:image/jpeg;base64," + CommonUtils.Bitmap2Base(businessBitmap));
                         try{
                             ivPicture.setImageBitmap(businessBitmap);
                         }catch (Exception e){
