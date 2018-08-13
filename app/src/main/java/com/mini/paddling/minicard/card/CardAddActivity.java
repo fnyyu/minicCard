@@ -191,8 +191,10 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                 String dataString = data.getDataString();
                 if (dataString != null) {
                     Uri uri = Uri.parse(dataString);
-                    File file1 = new File(FileUtils.getRealFilePath(this, uri));
-                    File file = new File(getApplicationContext().getExternalCacheDir(), "Videos/VID_20180813_212323.mp4");
+                    File realFile = new File(FileUtils.getRealFilePath(this, uri));
+                    String filename = "Video/" + realFile.getName();
+
+                    File file = new File(getApplicationContext().getExternalCacheDir(), filename);
                     byte[] bytes = FileUtils.getBytesFromFile(this, file);
                     String base = CommonUtils.byteArray2Base(bytes);
 
