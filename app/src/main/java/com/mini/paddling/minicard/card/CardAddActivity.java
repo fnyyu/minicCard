@@ -55,6 +55,8 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     TextView tvCommit;
     @BindView(R.id.iv_picture)
     ImageView ivPicture;
+    @BindView(R.id.vv_picture)
+    ImageView vvPicture;
 
     private NetRequest netRequest;
 

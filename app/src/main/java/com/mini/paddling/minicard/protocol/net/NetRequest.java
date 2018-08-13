@@ -310,7 +310,7 @@ public class NetRequest {
      *
      * @param bean
      */
-    public void eidtCardRequest(CardBean bean) {
+    public void editCardRequest(CardBean bean) {
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("card_id", bean.getCard_id())
@@ -322,6 +322,7 @@ public class NetRequest {
                 .add("card_user_address", bean.getCard_user_address())
                 .add("card_user_slogan", bean.getCard_user_slogan())
                 .add("card_user_picture", bean.getCard_user_picture())
+                .add("card_user_video", bean.getCard_user_video())
                 .add("card_click_time", bean.getCard_click_time())
                 .build();
 

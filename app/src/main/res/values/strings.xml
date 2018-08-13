@@ -32,6 +32,7 @@
     <string name="add_picture">添加图片</string>
     <string name="gallery">从图库中选取</string>
     <string name="camera">拍摄照片</string>
+    <string name="video_gallery">从视频库中选取</string>
 
     <string name="search_hint">搜索更多</string>
 

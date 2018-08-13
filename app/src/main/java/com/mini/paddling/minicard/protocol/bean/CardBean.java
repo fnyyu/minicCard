@@ -27,6 +27,7 @@ public class CardBean implements Serializable{
     private String card_user_address = "";
     private String card_user_slogan = "";
     private String card_user_picture = "";
+    private String card_user_video = "";
     private String card_click_time = "";
     /**
      * is_collect : 1
@@ -112,6 +113,14 @@ public class CardBean implements Serializable{
 
     public void setCard_user_picture(String card_user_picture) {
         this.card_user_picture = card_user_picture;
+    }
+
+    public String getCard_user_video() {
+        return card_user_video;
+    }
+
+    public void setCard_user_video(String card_user_video) {
+        this.card_user_video = card_user_video;
     }
 
     public String getCard_click_time() {

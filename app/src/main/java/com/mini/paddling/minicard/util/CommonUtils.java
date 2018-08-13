@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class CommonUtils {
 
@@ -63,6 +64,10 @@ public class CommonUtils {
             return result;
         }
 
+    }
+
+    public static String byteArray2Base(byte[] bytes) {
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     /**
