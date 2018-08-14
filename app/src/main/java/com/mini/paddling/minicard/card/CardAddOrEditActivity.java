@@ -1,14 +1,19 @@
 package com.mini.paddling.minicard.card;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +29,7 @@ import com.mini.paddling.minicard.event.CardEvent;
 import com.mini.paddling.minicard.protocol.bean.CardBean;
 import com.mini.paddling.minicard.protocol.bean.ResultBean;
 import com.mini.paddling.minicard.protocol.net.NetRequest;
+import com.mini.paddling.minicard.user.LoginUserManager;
 import com.mini.paddling.minicard.util.CommonUtils;
 import com.mini.paddling.minicard.util.FileUtils;
 import com.mini.paddling.minicard.view.TitleBarView;
@@ -39,12 +45,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class CardEditActivity extends Activity implements NetRequest.OnRequestListener {
+public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequestListener {
 
-    public static final Uri URI_IMAGE = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-    public static final Uri URI_VIDEO = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-    public static final String TYPE_IMAGE = "image/*";
-    public static final String TYPE_VIDEO = "video/*";
+    private static final Uri URI_IMAGE = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    private static final Uri URI_VIDEO = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+    private static final String TYPE_IMAGE = "image/*";
+    private static final String TYPE_VIDEO = "video/*";
+
+    private static final int REQUEST_IMAGE_FROM_NATIVE = 0;
+    private static final int REQUEST_IMAGE_FROM_CAMERA = 1;
+    public static final int REQUEST_CROP_IMAGE = 2;
+    private static final int REQUEST_VIDEO_FROM_NATIVE = 3;
+    private static final int REQUEST_WRITE_STORAGE_PERMISSION = 4;
 
     @BindView(R.id.tbv_title)
     TitleBarView tbvTitle;
@@ -64,16 +76,19 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     ImageView ivPicture;
     @BindView(R.id.iv_src)
     SimpleDraweeView ivSrc;
-    @BindView(R.id.iv_video)
-    ImageView ivVideo;
     @BindView(R.id.vv_picture)
     VideoView vvPicture;
     @BindView(R.id.et_special)
     EditText etSpecial;
+    @BindView(R.id.iv_video)
+    SimpleDraweeView ivVideo;
 
     private NetRequest netRequest;
 
     private CardBean cardBean;
+
+    private int failedMessageResId;
+    private Runnable requestMethod;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,9 +98,33 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
 
         initTitleView();
 
+        ivSrc.setVisibility(View.INVISIBLE);
+        ivPicture.setVisibility(View.VISIBLE);
+        ivVideo.setVisibility(View.VISIBLE);
+        vvPicture.setVisibility(View.VISIBLE);
+
         cardBean = (CardBean) getIntent().getSerializableExtra("card");
 
-        initView();
+        if (cardBean != null) {
+            initView();
+            failedMessageResId = R.string.edit_failed;
+            requestMethod = new Runnable() {
+                @Override
+                public void run() {
+                    netRequest.editCardRequest(cardBean);
+                }
+            };
+        } else {
+            cardBean = new CardBean();
+            cardBean.setUser_id(LoginUserManager.getInstance().getUserUid());
+            failedMessageResId = R.string.add_failed;
+            requestMethod = new Runnable() {
+                @Override
+                public void run() {
+                    netRequest.addCardRequest(cardBean);
+                }
+            };
+        }
 
         netRequest = new NetRequest(this);
 
@@ -100,13 +139,16 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         etManager.setText(cardBean.getCard_business_service());
         etSpecial.setText(cardBean.getCard_business_trade());
 
-        if (TextUtils.isEmpty(cardBean.getCard_user_picture())) {
-            ivSrc.setVisibility(View.INVISIBLE);
-            ivPicture.setVisibility(View.VISIBLE);
-        } else {
+        if (!TextUtils.isEmpty(cardBean.getCard_user_picture())) {
             ivSrc.setImageURI(cardBean.getCard_user_picture());
             ivPicture.setVisibility(View.INVISIBLE);
             ivSrc.setVisibility(View.VISIBLE);
+        }
+
+        if (!TextUtils.isEmpty(cardBean.getCard_user_video())) {
+            ivVideo.setImageURI(cardBean.getCard_user_video());
+            vvPicture.setVisibility(View.INVISIBLE);
+            ivVideo.setVisibility(View.VISIBLE);
         }
     }
 
@@ -136,7 +178,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
             public void run() {
                 if (resultBean != null) {
 
-                    Toast.makeText(CardEditActivity.this, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardAddOrEditActivity.this, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
                     CardEvent cardEvent = new CardEvent();
                     cardEvent.setType(1);
                     cardEvent.setCardBean(cardBean);
@@ -144,7 +186,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                     finish();
 
                 } else {
-                    Toast.makeText(CardEditActivity.this, "编辑失败,请重试", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardAddOrEditActivity.this, failedMessageResId, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -160,12 +202,19 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                 break;
             case R.id.iv_video:
             case R.id.vv_picture:
-                showSelectVideoDialog();
+                String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                int permissionStatus = ActivityCompat.checkSelfPermission(this, permission);
+
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    showSelectVideoDialog();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{permission}, REQUEST_WRITE_STORAGE_PERMISSION);
+                }
                 break;
             case R.id.tv_commit:
 
                 if (TextUtils.isEmpty(etTitle.getText())) {
-                    Toast.makeText(CardEditActivity.this, "店铺名称不准为空!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardAddOrEditActivity.this, R.string.name_required, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 cardBean.setCard_business_name(etTitle.getText().toString());
@@ -174,7 +223,8 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                 cardBean.setCard_user_address(etAddress.getText().toString());
                 cardBean.setCard_user_slogan(etGexing.getText().toString());
                 cardBean.setCard_business_trade(etSpecial.getText().toString());
-                netRequest.editCardRequest(cardBean);
+
+                requestMethod.run();
                 break;
         }
     }
@@ -183,20 +233,20 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             //相册获取结果
-            case 0:
+            case REQUEST_IMAGE_FROM_NATIVE:
                 if (resultCode == RESULT_OK) {
                     cropPhoto(data.getData());
                 }
                 break;
             //相机拍照结果
-            case 1:
+            case REQUEST_IMAGE_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
                     File temp = new File(Environment.getExternalStorageDirectory() + "/businessBitmap.jpg");
                     cropPhoto(Uri.fromFile(temp));
                 }
                 break;
             //裁剪图片后
-            case 2:
+            case REQUEST_CROP_IMAGE:
                 if (data != null) {
                     Bundle extras = data.getExtras();
                     Bitmap businessBitmap = extras.getParcelable("data");
@@ -212,14 +262,11 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                     }
                 }
                 break;
-            case 3:
+            case REQUEST_VIDEO_FROM_NATIVE:
                 String dataString = data.getDataString();
                 if (dataString != null) {
                     Uri uri = Uri.parse(dataString);
-                    File realFile = new File(FileUtils.getRealFilePath(this, uri));
-                    String filename = "Videos/" + realFile.getName();
-
-                    File file = new File(getApplicationContext().getExternalCacheDir(), filename);
+                    File file = new File(FileUtils.getRealFilePath(this, uri));
                     byte[] bytes = FileUtils.getBytesFromFile(this, file);
                     String base = CommonUtils.byteArray2Base(bytes);
 
@@ -234,9 +281,9 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     }
 
     private void showSelectImageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CardEditActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CardAddOrEditActivity.this);
         final AlertDialog dialog = builder.create();
-        View view = View.inflate(CardEditActivity.this, R.layout.dialog_select_photo, null);
+        View view = View.inflate(CardAddOrEditActivity.this, R.layout.dialog_select_photo, null);
         TextView tv_select_gallery = view.findViewById(R.id.tv_select_gallery);
         TextView tv_select_camera = view.findViewById(R.id.tv_select_camera);
         tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在相册中选取
@@ -244,7 +291,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
             public void onClick(View v) {
                 Intent intent1 = new Intent(Intent.ACTION_PICK, null);
                 intent1.setDataAndType(URI_IMAGE, TYPE_IMAGE);
-                startActivityForResult(intent1, 0);
+                startActivityForResult(intent1, REQUEST_IMAGE_FROM_NATIVE);
                 dialog.dismiss();
             }
         });
@@ -254,7 +301,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                 Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 intent2.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "businessBitmap.jpg")));
-                startActivityForResult(intent2, 1);// 采用ForResult打开
+                startActivityForResult(intent2, REQUEST_IMAGE_FROM_CAMERA);// 采用ForResult打开
                 dialog.dismiss();
             }
         });
@@ -263,9 +310,9 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     }
 
     private void showSelectVideoDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CardEditActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CardAddOrEditActivity.this);
         final AlertDialog dialog = builder.create();
-        View view = View.inflate(CardEditActivity.this, R.layout.dialog_select_video, null);
+        View view = View.inflate(CardAddOrEditActivity.this, R.layout.dialog_select_video, null);
         TextView tv_select_gallery = view.findViewById(R.id.tv_select_gallery);
 //        TextView tv_select_camera = view.findViewById(R.id.tv_select_camera);
         tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在视频库中选取
@@ -273,7 +320,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
             public void onClick(View v) {
                 Intent intent1 = new Intent(Intent.ACTION_PICK, null);
                 intent1.setDataAndType(URI_VIDEO, TYPE_VIDEO);
-                startActivityForResult(intent1, 3);
+                startActivityForResult(intent1, REQUEST_VIDEO_FROM_NATIVE);
                 dialog.dismiss();
             }
         });
@@ -304,7 +351,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         intent.putExtra("outputY", 220);
         intent.putExtra("return-data", true);
         //进入系统裁剪图片的界面
-        startActivityForResult(intent, 2);
+        startActivityForResult(intent, REQUEST_CROP_IMAGE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -320,4 +367,14 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_WRITE_STORAGE_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showSelectVideoDialog();
+                }
+                break;
+        }
+    }
 }

@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mini.paddling.minicard.R;
 import com.mini.paddling.minicard.event.CardEvent;
@@ -186,7 +185,7 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
                 break;
             case R.id.tv_edit:
 
-                Intent intent = new Intent(CardActivity.this, CardEditActivity.class);
+                Intent intent = new Intent(CardActivity.this, CardAddOrEditActivity.class);
                 intent.putExtra("card", cardBean);
                 startActivity(intent);
 

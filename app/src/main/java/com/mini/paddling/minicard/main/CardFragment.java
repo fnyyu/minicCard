@@ -1,6 +1,5 @@
 package com.mini.paddling.minicard.main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,18 +7,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.mini.paddling.minicard.R;
-import com.mini.paddling.minicard.card.CardAddActivity;
+import com.mini.paddling.minicard.card.CardAddOrEditActivity;
 import com.mini.paddling.minicard.event.CardEvent;
 import com.mini.paddling.minicard.event.CollectEvent;
 import com.mini.paddling.minicard.main.adapter.CardAdapter;
@@ -247,7 +244,7 @@ public class CardFragment extends Fragment implements NetRequest.OnRequestListen
 
     @OnClick(R.id.fab_add)
     public void onViewClicked() {
-        Intent intent = new Intent(getActivity(), CardAddActivity.class);
+        Intent intent = new Intent(getActivity(), CardAddOrEditActivity.class);
         startActivity(intent);
     }
 

@@ -53,5 +53,9 @@
 
     <string name="protocol_text">创建账号即代表您同意用户服务协议</string>
 
-
+    <string name="name_required">店铺名称不准为空!</string>
+    <string name="add_succeed">添加成功</string>
+    <string name="add_failed">添加失败,请重试</string>
+    <string name="edit_succeed">修改成功</string>
+    <string name="edit_failed">修改失败,请重试</string>
 </resources>

@@ -116,7 +116,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
             public void run() {
                 if (resultBean != null && resultBean instanceof CardAddBean) {
 
-                    Toast.makeText(CardAddActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardAddActivity.this, resultBean.getRet_message(), Toast.LENGTH_SHORT).show();
                     cardBean.setCard_id(((CardAddBean) resultBean).getData().getCard_id());
 
                     CardEvent cardEvent = new CardEvent();
@@ -127,7 +127,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                     CardAddActivity.this.finish();
 
                 } else {
-                    Toast.makeText(CardAddActivity.this, "添加失败,请重试", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CardAddActivity.this, R.string.add_failed, Toast.LENGTH_SHORT).show();
 
                 }
             }
