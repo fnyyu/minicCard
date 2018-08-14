@@ -16,6 +16,7 @@
 
     <string name="store">店铺名称</string>
     <string name="business">主营业务</string>
+    <string name="special">店铺特色</string>
     <string name="phone">联系方式</string>
     <string name="address">店铺地址</string>
     <string name="sign">个性签名</string>
@@ -43,6 +44,12 @@
     <string name="search_empty">暂时找不到噢</string>
 
     <string name="special_text">%1$s&#160;/&#160;%2$s</string>
+
+    <string name="setting_pas">更换密码</string>
+    <string name="setting_version">版本号</string>
+    <string name="setting_clear">清除缓存</string>
+    <string name="setting_about">关于</string>
+    <string name="setting_logout">退出登录</string>
 
     <string name="protocol_text">创建账号即代表您同意用户服务协议</string>
 

@@ -161,8 +161,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             super(itemView);
             ivCard = itemView.findViewById(R.id.iv_card);
             tvTitle = itemView.findViewById(R.id.tv_title);
-            tvAddress = itemView.findViewById(R.id.tv_operating);
-            tvSpecia = itemView.findViewById(R.id.tv_address);
+            tvAddress = itemView.findViewById(R.id.tv_address);
+            tvSpecia = itemView.findViewById(R.id.tv_operating);
         }
     }
 }

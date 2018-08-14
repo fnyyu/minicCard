@@ -68,6 +68,8 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
     ImageView ivVideo;
     @BindView(R.id.vv_picture)
     VideoView vvPicture;
+    @BindView(R.id.et_special)
+    EditText etSpecial;
 
     private NetRequest netRequest;
 
@@ -96,6 +98,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
         etAddress.setText(cardBean.getCard_user_address());
         etPhone.setText(cardBean.getCard_user_tel());
         etManager.setText(cardBean.getCard_business_service());
+        etSpecial.setText(cardBean.getCard_business_trade());
 
         if (TextUtils.isEmpty(cardBean.getCard_user_picture())) {
             ivSrc.setVisibility(View.INVISIBLE);
@@ -170,6 +173,7 @@ public class CardEditActivity extends Activity implements NetRequest.OnRequestLi
                 cardBean.setCard_user_tel(etPhone.getText().toString());
                 cardBean.setCard_user_address(etAddress.getText().toString());
                 cardBean.setCard_user_slogan(etGexing.getText().toString());
+                cardBean.setCard_business_trade(etSpecial.getText().toString());
                 netRequest.editCardRequest(cardBean);
                 break;
         }

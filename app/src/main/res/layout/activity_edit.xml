@@ -10,9 +10,11 @@
         android:layout_height="50dp"/>
 
     <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:id="@+id/tl_title"
         android:layout_below="@+id/tbv_title"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,9 +28,11 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:id="@+id/tl_manager"
         android:layout_below="@+id/tl_title"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,9 +46,29 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/tl_phone"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/tl_special"
         android:layout_below="@+id/tl_manager"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:singleLine="true"
+            android:id="@+id/et_special"
+            android:hint="@string/special"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/tl_phone"
+        android:layout_below="@+id/tl_special"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -59,9 +83,11 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:id="@+id/tl_address"
         android:layout_below="@+id/tl_phone"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -76,9 +102,11 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:id="@+id/tl_gexing"
         android:layout_below="@+id/tl_address"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -96,7 +124,7 @@
     <ImageView
         android:src="@drawable/collect_pic"
         android:layout_below="@+id/tl_gexing"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"
         android:scaleType="center"
         android:id="@+id/iv_picture"
@@ -104,10 +132,10 @@
         android:layout_height="50dp"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_marginTop="5dp"
         android:visibility="invisible"
         android:src="@drawable/icon_picture"
         android:layout_below="@+id/tl_gexing"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:scaleType="fitCenter"
         android:id="@+id/iv_src"
@@ -115,10 +143,10 @@
         android:layout_height="50dp"/>
 
     <ImageView
+        android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/iv_picture"
         android:src="@drawable/collect_video"
         android:layout_below="@+id/tl_gexing"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"
         android:scaleType="center"
         android:id="@+id/iv_video"
@@ -126,10 +154,10 @@
         android:layout_height="50dp"/>
 
     <VideoView
+        android:layout_marginTop="5dp"
         android:src="@drawable/collect_video"
         android:layout_toEndOf="@id/iv_src"
         android:layout_below="@+id/tl_gexing"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"
         android:scaleType="fitCenter"
         android:id="@+id/vv_picture"
@@ -140,8 +168,8 @@
     <TextView
         android:layout_marginTop="20dp"
         android:layout_below="@+id/iv_picture"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:id="@+id/tv_commit"
         android:textSize="16dp"
         android:text="@string/commit"

@@ -17,6 +17,7 @@ import com.mini.paddling.minicard.user.StartUpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MineFragment extends Fragment {
 
@@ -68,5 +69,10 @@ public class MineFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @OnClick(R.id.rl_setting)
+    public void onViewClicked() {
+        startActivity(new Intent(getActivity(), SettingActivity.class));
     }
 }
