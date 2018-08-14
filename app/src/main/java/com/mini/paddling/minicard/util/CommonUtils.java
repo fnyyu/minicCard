@@ -3,6 +3,7 @@ package com.mini.paddling.minicard.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.util.Base64;
 import android.view.View;
 
@@ -96,5 +97,9 @@ public class CommonUtils {
         return (int) (dipValue * scale + 0.5f);
     }
 
-
+    public static Bitmap getVideoThumb(String videoFile) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(videoFile);
+        return retriever.getFrameAtTime();
+    }
 }

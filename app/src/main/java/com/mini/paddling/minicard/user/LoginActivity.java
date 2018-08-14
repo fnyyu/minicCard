@@ -205,7 +205,7 @@ public class LoginActivity extends Activity implements NetRequest.OnRequestListe
 
 
                 }else {
-                    Toast.makeText(LoginActivity.this, "系统错误，请重试", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "登录失败，请重试", Toast.LENGTH_SHORT).show();
                 }
             }
 

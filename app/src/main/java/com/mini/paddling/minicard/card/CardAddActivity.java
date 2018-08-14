@@ -61,9 +61,9 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     EditText etGexing;
     @BindView(R.id.tv_commit)
     TextView tvCommit;
-    @BindView(R.id.vv_picture)
+    @BindView(R.id.iv_video_picture)
     VideoView vvPicture;
-    @BindView(R.id.iv_video)
+    @BindView(R.id.iv_video_src)
     ImageView ivVideo;
     @BindView(R.id.iv_picture)
     ImageView ivPicture;
@@ -133,13 +133,13 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
 
     }
 
-    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.vv_picture})
+    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_video_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_picture:
                 showSelectImageDialog();
                 break;
-            case R.id.vv_picture:
+            case R.id.iv_video_picture:
                 showSelectVideoDialog();
                 break;
             case R.id.tv_commit:

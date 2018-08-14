@@ -75,10 +75,10 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
     ImageView ivPicture;
     @BindView(R.id.iv_src)
     SimpleDraweeView ivSrc;
-    @BindView(R.id.vv_picture)
-    VideoView vvPicture;
-    @BindView(R.id.iv_video)
-    SimpleDraweeView ivVideo;
+    @BindView(R.id.iv_video_picture)
+    ImageView ivVideo;
+    @BindView(R.id.iv_video_src)
+    SimpleDraweeView ivVideoSrc;
 
     private NetRequest netRequest;
 
@@ -97,8 +97,8 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
 
         ivSrc.setVisibility(View.INVISIBLE);
         ivPicture.setVisibility(View.VISIBLE);
-        ivVideo.setVisibility(View.INVISIBLE);
-        vvPicture.setVisibility(View.VISIBLE);
+        ivVideoSrc.setVisibility(View.INVISIBLE);
+        ivVideo.setVisibility(View.VISIBLE);
 
         cardBean = (CardBean) getIntent().getSerializableExtra("card");
 
@@ -142,9 +142,9 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
         }
 
         if (!TextUtils.isEmpty(cardBean.getCard_user_video())) {
-            ivVideo.setImageURI(cardBean.getCard_user_video());
-            vvPicture.setVisibility(View.INVISIBLE);
-            ivVideo.setVisibility(View.VISIBLE);
+//            ivVideo.setImageURI(cardBean.getCard_user_video());
+//            ivVideo.setVisibility(View.INVISIBLE);
+//            ivVideoSrc.setVisibility(View.VISIBLE);
         }
     }
 
@@ -189,15 +189,15 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
 
     }
 
-    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_src, R.id.vv_picture, R.id.iv_video})
+    @OnClick({R.id.iv_picture, R.id.tv_commit, R.id.iv_src, R.id.iv_video_picture, R.id.iv_video_src})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_src:
             case R.id.iv_picture:
                 showSelectImageDialog();
                 break;
-            case R.id.iv_video:
-            case R.id.vv_picture:
+            case R.id.iv_video_src:
+            case R.id.iv_video_picture:
                 String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
                 int permissionStatus = ActivityCompat.checkSelfPermission(this, permission);
 
@@ -268,7 +268,7 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
                     String fileFormat = file.getName().substring(file.getName().indexOf('.') + 1);
 
                     cardBean.setCard_user_video("data:video/" + fileFormat + ";base64," + base);
-                    vvPicture.setVideoURI(Uri.parse(dataString));
+//                    vvPicture.setImageURI(Uri.parse(dataString));
                     Log.v("", "");
                 }
                 break;
