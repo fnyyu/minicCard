@@ -67,6 +67,8 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
     ImageView ivVideo;
     @BindView(R.id.iv_picture)
     ImageView ivPicture;
+    @BindView(R.id.et_special)
+    EditText etSpecial;
 
     private NetRequest netRequest;
 
@@ -150,6 +152,7 @@ public class CardAddActivity extends Activity implements NetRequest.OnRequestLis
                 }
                 cardBean.setCard_business_name(etTitle.getText().toString());
                 cardBean.setCard_business_service(etManager.getText().toString());
+                cardBean.setCard_business_trade(etSpecial.getText().toString());
                 cardBean.setCard_user_tel(etPhone.getText().toString());
                 cardBean.setCard_user_address(etAddress.getText().toString());
                 cardBean.setCard_user_slogan(etGexing.getText().toString());

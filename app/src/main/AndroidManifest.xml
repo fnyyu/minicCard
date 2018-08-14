@@ -49,6 +49,8 @@
 
         <activity android:name=".card.CardAddOrEditActivity"/>
 
+        <activity android:name=".main.SettingActivity"/>
+
         <!--QQ分享相关-->
         <activity
             android:name="com.tencent.tauth.AuthActivity"

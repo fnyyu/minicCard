@@ -79,6 +79,8 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
     ImageView ivVideo;
     @BindView(R.id.iv_video_src)
     SimpleDraweeView ivVideoSrc;
+    @BindView(R.id.et_special)
+    EditText etSpecial;
 
     private NetRequest netRequest;
 
@@ -134,6 +136,7 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
         etAddress.setText(cardBean.getCard_user_address());
         etPhone.setText(cardBean.getCard_user_tel());
         etManager.setText(cardBean.getCard_business_service());
+        etSpecial.setText(cardBean.getCard_business_trade());
 
         if (!TextUtils.isEmpty(cardBean.getCard_user_picture())) {
             ivSrc.setImageURI(cardBean.getCard_user_picture());
@@ -218,6 +221,7 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
                 cardBean.setCard_user_tel(etPhone.getText().toString());
                 cardBean.setCard_user_address(etAddress.getText().toString());
                 cardBean.setCard_user_slogan(etGexing.getText().toString());
+                cardBean.setCard_business_trade(etSpecial.getText().toString());
 
                 requestMethod.run();
                 break;

@@ -13,7 +13,9 @@
 
     <color name="green">#4bcf54</color>
 
-    <color name="transparent_black">#9e3d3d3d</color>
+    <color name="flb_bg">#2ab6f2</color>
+
+    <color name="transparent_black">#9e676767</color>
 
     <color name="line_color">#d8d8d8</color>
 
