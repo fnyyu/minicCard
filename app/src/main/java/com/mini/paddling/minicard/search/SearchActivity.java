@@ -122,7 +122,7 @@ public class SearchActivity extends Activity  implements SearchEditText.SearchCl
     @Override
     protected void onResume() {
         super.onResume();
-        hideInputMethod(false);
+        hideInputMethod(cardAdapter.getItemCount() > 0);
     }
 
     @Override
