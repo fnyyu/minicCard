@@ -246,7 +246,7 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
                 break;
             //裁剪图片后
             case REQUEST_CROP_IMAGE:
-                if (data != null) {
+                if (resultCode == RESULT_OK && data != null) {
                     Bundle extras = data.getExtras();
                     Bitmap businessBitmap = extras.getParcelable("data");
                     if (businessBitmap != null) {
@@ -262,18 +262,20 @@ public class CardAddOrEditActivity extends Activity implements NetRequest.OnRequ
                 }
                 break;
             case REQUEST_VIDEO_FROM_NATIVE:
-                String dataString = data.getDataString();
-                if (dataString != null) {
-                    Uri uri = Uri.parse(dataString);
-                    File file = new File(FileUtils.getRealFilePath(this, uri));
-                    byte[] bytes = FileUtils.getBytesFromFile(this, file);
-                    String base = CommonUtils.byteArray2Base(bytes);
+                if (resultCode == RESULT_OK) {
+                    String dataString = data.getDataString();
+                    if (dataString != null) {
+                        Uri uri = Uri.parse(dataString);
+                        File file = new File(FileUtils.getRealFilePath(this, uri));
+                        byte[] bytes = FileUtils.getBytesFromFile(this, file);
+                        String base = CommonUtils.byteArray2Base(bytes);
 
-                    String fileFormat = file.getName().substring(file.getName().indexOf('.') + 1);
+                        String fileFormat = file.getName().substring(file.getName().indexOf('.') + 1);
 
-                    cardBean.setCard_user_video("data:video/" + fileFormat + ";base64," + base);
+                        cardBean.setCard_user_video("data:video/" + fileFormat + ";base64," + base);
 //                    vvPicture.setImageURI(Uri.parse(dataString));
-                    Log.v("", "");
+                        Log.v("", "");
+                    }
                 }
                 break;
         }

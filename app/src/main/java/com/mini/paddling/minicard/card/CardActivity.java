@@ -289,15 +289,15 @@ public class CardActivity extends Activity implements NetRequest.OnRequestListen
     private void shareViewBitmapToQQ() {
         try {
             if (isVideo){
-                vpPlayer.setVisibility(View.INVISIBLE);
-                ivPicture.setVisibility(View.VISIBLE);
+//                vpPlayer.setVisibility(View.INVISIBLE);
+//                ivPicture.setVisibility(View.VISIBLE);
             }
 
             Bitmap bitmap = CommonUtils.getViewBitmap(rlCard);
 
             if (isVideo){
-                vpPlayer.setVisibility(View.VISIBLE);
-                ivPicture.setVisibility(View.INVISIBLE);
+//                vpPlayer.setVisibility(View.VISIBLE);
+//                ivPicture.setVisibility(View.INVISIBLE);
             }
 
 //            String imageBase = CommonUtils.Bitmap2Base(bitmap);
