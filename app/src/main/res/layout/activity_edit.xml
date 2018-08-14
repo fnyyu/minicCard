@@ -74,6 +74,7 @@
 
 
     <EditText
+        android:inputType="phone"
         android:singleLine="true"
         android:id="@+id/et_phone"
         android:hint="@string/phone"
